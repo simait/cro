@@ -1,1 +1,8 @@
-asdfsd := snarf + 45 - 8; snarf := blaerg.glubb * 4 + 4;
+module test {
+	object test {
+		int test;
+		int test1;
+		int snarf;
+		method test(int gnarf)
+	}
+}
