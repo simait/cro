@@ -1,8 +1,4 @@
-module test {
-	object test {
-		int test;
-		int test1;
-		int snarf;
-		method test(int gnarf)
+	method loop(int bbbb) {
+		value := 0;
+		
 	}
-}
