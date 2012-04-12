@@ -1,4 +1,7 @@
-	method loop(int bbbb) {
-		value := 0;
-		
+module test {
+	class test(int value) {
+		method test(int value) {
+		}
 	}
+
+}

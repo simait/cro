@@ -1,0 +1,32 @@
+module test {
+	class test(int snarf) {
+		method loop(int value) {
+			value := 0;
+			value := 1;
+			foreach i in value {
+				value := 2;
+				if (value) {
+					value := 3;
+				}
+				if (value) {
+				} else {
+					if (value) {
+					}
+				}
+			}
+			value := 4;
+			value := value.5(4, 5, 6, 7, 8);
+			blaergh := value.test.snarf();
+			if (something.call(5, 6) < 67) {return 65;} else {return 42;}
+		}
+	}
+
+	class root(int asdf) {
+		method init(int dummy) {
+		}
+		method gnargh(int dummy) {
+		}
+		method dsfads(int sdfasd) {
+		}
+	}
+}
