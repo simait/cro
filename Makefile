@@ -1,12 +1,19 @@
-all:
+all: cro-compiled.maude
+
+pdf: cro.pdf
+
+cro-compiled.maude: cro.k
 	kompile cro
 
-test:
+cro.pdf: cro.k
+	kompile --pdf cro
+
+test: cro-compiled.maude
 	krun programs/test.cro
 
-test:
+test2: cro-compiled.maude
 	krun programs/test2.cro
 
-ast:
+ast: cro-compiled.maude
 	kast programs/test.cro && echo
 #kast --k-definition ./cro --main-module CRO --syntax-module CRO-SYNTAX programs/test.cro && echo

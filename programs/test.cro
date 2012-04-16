@@ -1,7 +1,14 @@
 module test {
-	class test(int value) {
-		method test(int value) {
+	class snarf(blaerg:int) {}
+	class test(init:int) {
+		method test(value:int):void {
+			snarf:int;
+		}
+
+		method test2(value:int):int[10] {
+		}
+
+		method test3(value:int):int[10] {
 		}
 	}
-
 }
