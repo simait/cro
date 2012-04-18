@@ -2,10 +2,10 @@ all: cro-compiled.maude
 
 pdf: cro.pdf
 
-cro-compiled.maude: cro.k
+cro-compiled.maude: cro.k cro-*.k
 	kompile cro
 
-cro.pdf: cro.k
+cro.pdf: cro.k cro-*.k
 	kompile --pdf cro
 
 test: cro-compiled.maude
