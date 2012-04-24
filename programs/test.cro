@@ -2,18 +2,22 @@ module test {
 	class root(dummy:int) {
 		test = new test(0);
 		method init(dummy:int):void {
-			test.test(0);
-			sum:int := 0;
+			test.test2(0);
 		}
 	}
 
 	class test(dummy:int) {
-		method test(dummy:int):int {
-			array:int[10];
-			sum:int := 0;
-			foreach i in array {
-				sum := sum + i;
-			}
+		var something:int := 0;
+		var snarf:int := 0;
+		var bloerg:int := 0;
+		var dnsnsnsn:int := 0;
+		var last:int := 7;
+		method test2(dummy:int):int {
+			var snarf:int := 8;
+			dummy := snarf;
+			dummy := snarf;
+			dummy := snarf;
+			return 9;
 		}
 	}
 }

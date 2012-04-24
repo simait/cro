@@ -2,8 +2,9 @@ in cro-common
 in cro-syntax
 in cro-config
 in cro-parser
+in cro-semantic
 
-module CRO imports CRO-COMMON + CRO-SYNTAX + CRO-CONFIG + CRO-PARSER
+module CRO imports CRO-COMMON + CRO-SYNTAX + CRO-CONFIG + CRO-PARSER + CRO-SEMANTIC
 
 	syntax Val ::=
 		#Id
@@ -11,7 +12,7 @@ module CRO imports CRO-COMMON + CRO-SYNTAX + CRO-CONFIG + CRO-PARSER
 
 	syntax KResult ::= Val
 	
-	kvar C1 C2		: Cmds
+	kvar S1 S2		: Stmts
 	kvar P			: K
 
 // -----------------------------------------------------------------------------
@@ -46,11 +47,11 @@ module CRO imports CRO-COMMON + CRO-SYNTAX + CRO-CONFIG + CRO-PARSER
 // -----------------------------------------------------------------------------
 
 	// Ensure sequential execution of commands.
-	rule	C1 C2 => C1 ~> C2														[structural]
+	rule	S1 S2 => S1 ~> S2														[structural]
 
 	//@ First rule, the loded program is in the <k> cell, we "lift" it and start the process of parsing and validating.
 	rule
-		<k> loadedProgram(P) => parse(P) ~> execute </k>
+		<k> loadedProgram(P) => P ~> init ~> execute </k>
 
 // 	syntax K ::= "createBinding" "(" #Id "," Type "," K ")"
 // 	rule
@@ -134,9 +135,8 @@ module CRO imports CRO-COMMON + CRO-SYNTAX + CRO-CONFIG + CRO-PARSER
 
 // -----------------------------------------------------------------------------
 
-	syntax K ::= "execute"
-	rule
-		<k> execute => ((root = new root(0);) ~> (root.init(0);)) </k>
-		<error> _ => "Unknown execution error." </error>
+// 	rule
+// 		<k> execute => ((root = new root(0);) ~> (root.init(0);)) </k>
+// 		<error> _ => "Unknown execution error." </error>
 
 end module
