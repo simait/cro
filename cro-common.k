@@ -20,11 +20,4 @@ module CRO-COMMON imports CRO-SYNTAX
 	define ids(I : T, .Exps)	=> I, .Ids
 	define ids(I : T, E, Es)	=> I, ids(E, Es)
 
-// 	declare qId : #Id #Id -> #Id
-// 	define qId(NS, I)		=> #id(Id2String(NS) +String "::" +String Id2String(I))
-// 
-// 	declare ns : #Id -> #Id
-// // 	define ns(#id(""))		=> #id("")
-// 	define ns(I)			=> #id(substrString(Id2String(I), rfindString(Id2String(I), "::", 0), lengthString(Id2String(I))))
-
 end module

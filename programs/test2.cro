@@ -1,13 +1,50 @@
 module test {
-	class root(dummy:int) {
+	class root() {
 		test = new test(0);
-		test = new test(0);
-		method init(dummy:int):void {
-			test.test(0);
+		test2 = new test(1);
+		var test3:int := 42;
+		method init():void {
+			print("Hello World!\n");
+			send start();
+		}
+		method start():void {
+			test3 := test.test(0, 100, 100);
+			test.test2(true);
+			test2.test2(false);
+			var notWorking:bool := true;
+			notWorking := false;
+			test2.test2(notWorking);
+			test.test3();
+			test2.test3();
+			send test2.test4("Hello from another message!\n");
+			var str:string := "Hello (again) from another message!\n";
+			send test2.test4(str);
 		}
 	}
-	class test(dummy:int) {
-		method test(dummy:int):int {
+	class test(id:int) {
+		method test(d0:int, d1:int, d2:int):int {
+			if (d1 > d2) {
+				return d0*d1+d2;
+			} else {
+				return d0*d2+d1;
+			}
+		}
+		method test2(hungry:bool):int {
+			if (hungry) {
+				print("Hungry!\n");
+			} else {
+				print("Not hungry.\n");
+			}
+		}
+		method test3():int {
+			if (id == 0) {
+				print("First test!\n");
+			} else {
+				print("Second test!\n");
+			}
+		}
+		method test4(str:string):void {
+			print(str);
 		}
 	}
 }

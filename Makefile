@@ -14,6 +14,9 @@ test: cro-compiled.maude
 test2: cro-compiled.maude
 	krun programs/test2.cro
 
+test3: cro-compiled.maude
+	krun programs/test3.cro
+
 ast: cro-compiled.maude
 	kast programs/test.cro && echo
 #kast --k-definition ./cro --main-module CRO --syntax-module CRO-SYNTAX programs/test.cro && echo

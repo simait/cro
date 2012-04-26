@@ -1,0 +1,18 @@
+module test {
+	class root() {
+		printer0 = new printer();
+		printer1 = new printer();
+		printer2 = new printer();
+		method init():void {
+			send printer0.output("0:Hello World!\n");
+			send printer1.output("1:Hello World!\n");
+			send printer2.output("2:Hello World!\n");
+		}
+	}
+
+	class printer() {
+		method output(str:string):void {
+			print(str);
+		}
+	}
+}

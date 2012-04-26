@@ -5,126 +5,92 @@ module CRO-SEMANTIC
 
 	imports CRO-COMMON + CRO-PARSER
 
-	syntax K ::= "init" | "cleanup" | "halt" | "execute"
+	syntax K ::= "initProgram" | "executeProgram" | "halt"
 
-	kvar L OL		: Int
 	kvar I I1 I2		: Id
+	kvar Is			: Ids
+	kvar B B1 B2		: Bool
+	kvar L OL		: Int
+	kvar Iv Iv1 Iv2		: Int
+	kvar Str1 Str2		: String
+	kvar UID		: Int
+	kvar Env Rho		: Map
+	kvar Obj PObj		: Bag
+	kvar E			: Exp
 	kvar Es			: Exps
-	kvar Rho Env		: Map
-	kvar Ss			: Stmts
-	kvar Obj OldObj B	: Bag
 	kvar T			: Type
 	kvar V			: Val
-
-// 	syntax K ::= "newUID" "(" ")"
-// 	rule
-// 		<nextUID> UID => UID +Int 1 </nextUID>
+	kvar Vs			: Vals
+	kvar Ss			: Stmts
+	kvar C K		: K
 
 	syntax Val ::=
-		"objectClosure" "(" Bag ")"
+		"loc" "(" Int ")"
+		| "objectClosure" "(" Bag ")"
 		| "methodClosure" "(" Int "," Ids "," Stmts ")"
+
+	syntax KResult ::= Val
+
+/* ************************************************************************** */
 
 	rule
 		<k>
-			init =>
-				pushClass() ~>
-				newClassName(root) ~>
-				newClassEnv() ~>
-				newClassAlloc() ~>
-				lookupClass(root) ~>
+			initProgram =>
+				newClass(root) ~>
+				loadClass(root, .Vals) ~>
 				storeRoot() ~>
-				popClass() ~>
-				cleanup
+				parseCleanup
 			...
 		</k>
 		<env> Env => . </env>
 
-	rule
-		<k>
-			I1 = new I2(Es); =>
-				pushClass() ~>
-// 				pushEnv() ~>
-				newClassName(I2) ~>
-				newClassEnv() ~>
-				newClassAlloc() ~>
-				lookupClass(I2) ~>
-// 				popEnv() ~>
-				storeClass(I1) ~>
-// 				halt ~>
-				popClass()
-			...
-		</k>
-
-	syntax K ::= "newClassName" "(" Id ")"
-	rule
-		<k> newClassName(I) => . ... </k>
-		<classStack>
-			ListItem(
-				obj(
-					Obj
-					(. => <thisClass> I </thisClass>)
-				)
-			) ...
-		</classStack>
-
-	syntax K ::= "newClassEnv" "(" ")"
-	rule
-		<k> newClassEnv() => . ... </k>
-		<classStack>
-			ListItem(
-				obj(
-					Obj
-					(. => <classEnv> . </classEnv>)
-				)
-			) ...
-		</classStack>
-
-	syntax K ::= "newClassAlloc" "(" ")"
-	rule
-		<k> newClassAlloc() => . ... </k>
- 		<classStack>
-			ListItem(
-				obj(
-					Obj
-					(. => <location> L </location>)
-				)
-			) ...
-		</classStack>
-		<nextLoc> L => L +Int 1 </nextLoc>
-
-	syntax K ::= "lookupClass" "(" Id ")"
-	rule
-		<k> lookupClass(I) => Ss ... </k>
-		<class>
-			<name> I </name>
-			<params> Es </params>
-			<declarations> Ss </declarations>
-		</class>
-
 	syntax K ::= "env" "(" Map ")"
 	syntax K ::= "obj" "(" Bag ")"
 
-	syntax K ::= "pushClass" "(" ")"
+	syntax K ::= "newClass" "(" Id ")"
 	rule
-		<k> pushClass() => . ... </k>
-		<classStack> . => ListItem(obj(.Bag)) ... </classStack>
+		<k> newClass(I) => . ... </k>
+		<classStack>
+			. => ListItem(
+				obj(
+					<thisClass> I </thisClass>
+					<classInterface> .Map </classInterface>
+					<classEnv> .Map </classEnv>
+					<locked> false </locked>
+					<location> L </location>
+				)
+			)
+			...
+		</classStack>
+		<nextLoc> L => L +Int 1 </nextLoc>
 
-// 	syntax K ::= "pushEnv" "(" ")"
-// 	rule
-// 		<k> pushEnv() => . </k>
-// 		<env> Rho => .Map </env>
-// 		<envStack> . => ListItem(env(Rho)) ... </envStack>
-		
-	syntax K ::= "popClass" "(" ")"
+	syntax K ::= "loadClass" "(" Id "," Vals ")"
 	rule
-		<k> popClass() => . ... </k>
-		<classStack> ListItem(obj(Obj)) => . ... </classStack>
+		<k> loadClass(I, Vs) => bindClassParams(Is, Vs) ~> Ss ... </k>
+		<class>
+			<name> I </name>
+			<params> Is </params>
+			<declarations> Ss </declarations>
+		</class>
 
-// 	syntax K ::= "popEnv" "(" ")"
-// 	rule
-// 		<k> popEnv() => . </k>
-// 		<env> Env => Rho </env>
-// 		<envStack> ListItem(env(Rho)) => . ... </envStack>
+	syntax K ::= "bindClassParams" "(" Ids "," Vals ")"
+	rule
+		<k> bindClassParams((I,Is => Is), (V,Vs => Vs)) ... </k>
+		<classStack>
+			ListItem(
+				obj(
+					Obj
+					<classEnv> Rho => Rho I |-> L </classEnv>
+				)
+			)
+			...
+		</classStack>
+		<store> ... . => L |-> V </store>
+		<nextLoc> L => L +Int 1 </nextLoc>
+		when notBool(I in keys(Rho))
+
+	rule
+		<k> bindClassParams(.Ids, .Vals) => . ... </k>
 
 	syntax K ::= "storeRoot" "(" ")"
 	rule
@@ -134,9 +100,10 @@ module CRO-SEMANTIC
 			ListItem(
 				obj(
 					Obj
-					(<location> L </location> => .)
+					(<location> L </location>)
 				)
-			) ...
+			) => .
+			...
 		</classStack>
 		<store> ... (. => L |-> objectClosure(Obj)) ... </store>
 
@@ -144,55 +111,274 @@ module CRO-SEMANTIC
 	rule
 		<k> storeClass(I) => . ... </k>
 		<classStack>
-			ListItem(
+			(ListItem(
 				obj(
 					Obj
-					(<location> L </location> => .)
+					<location> L </location>
 				)
-			) ...
+			) => .)
+			ListItem(
+				obj(
+					PObj
+					<classEnv> Rho => Rho I |-> L </classEnv>
+				)
+			)
+			...
 		</classStack>
-		<store> ... (. => L |-> objectClosure(Obj)) ... </store>
+		<store> ... . => L |-> objectClosure(Obj) ... </store>
 		when notBool(I in keys(Rho))
 
+	syntax K ::= "classEnvAdd" "(" Id "," Int ")"
 	rule
-		<k> module I {Ss} => Ss ... </k>
-
-	rule
-		<k> class I (Es) {Ss} => . ... </k>
-		<classes>
-			(. => <class>
-				<name> I </name>
-				<params> ids(Es) </params>
-				<declarations> Ss </declarations>
-			</class>) ...
-		</classes>
-
-	rule
-		<k> var I : T := V; => . ... </k>
-
-	rule
-		<k> method I(Es) : T { Ss } => . ... </k>
+		<k> classEnvAdd(I, L) => . ... </k>
 		<classStack>
 			ListItem(
 				obj(
 					Obj
-					(<classEnv> Rho => Rho I |-> L </classEnv>)
-					(<location> OL </location>)
+					<classEnv> Rho => Rho I |-> L </classEnv>
 				)
-			) ...
+			)
+			...
+		</classStack>
+		when notBool(I in keys(Rho))
+
+	syntax K ::= "classInterfaceAdd" "(" Id "," Int ")"
+	rule
+		<k> classInterfaceAdd(I, L) => . ... </k>
+		<classStack>
+			ListItem(
+				obj(
+					Obj
+					<classInterface> Rho => Rho I |-> L </classInterface>
+				)
+			)
+			...
+		</classStack>
+		when notBool(I in keys(Rho))
+
+/* ************************************************************************** */
+
+	rule
+		// NOTE:
+		//	This actually relies on the fact that there will never
+		//	be anything on the classStack when we execute, only
+		//	during parsing. Perhaps it should be renamed parseStack?
+		<k> var I : T := V; => . ... </k>
+		<classStack>
+			ListItem(
+				obj(
+					Obj
+					<classEnv> Rho => Rho I |-> L </classEnv>
+				)
+			)
+			...
+		</classStack>
+		<store> ... . => L |-> V ... </store>
+		<nextLoc> L => L +Int 1 </nextLoc>
+
+	rule
+		<k>
+			I1 = new I2(Vs); =>
+				newClass(I2) ~>
+				loadClass(I2, Vs) ~>
+				storeClass(I1)
+			...
+		</k>
+
+	rule
+		<k> method I(Es) : T { Ss } => classEnvAdd(I, L) ~> classInterfaceAdd(I, L) ... </k>
+		<classStack>
+			ListItem(
+				obj(
+					Obj
+					<location> OL </location>
+				)
+			)
+			...
 		</classStack>
 		<store> ... . => L |-> methodClosure(OL, ids(Es), Ss) ... </store>
 		<nextLoc> L => L +Int 1 </nextLoc>
-		when notBool(I in keys(Rho))
+
+
+/* ************************************************************************** */
 
 	rule
-		<k> cleanup => . ... </k>
-		<classes>
-			B => .
-		</classes>
-// 	rule
-// 		<k> execute => _`(_`)(root.init, 0); ... </k>
+		<k> executeProgram => _`(_`)(_._(root, init), .Vals); ... </k>
 
-	syntax K ::= "lvalue" "(" K ")"
+/* ************************************************************************** */
 
+	rule	<k> - Iv => 0 -Int Iv ... </k>
+	rule	<k> Iv1 + Iv2 => Iv1 +Int Iv2 ... </k>
+	rule	<k> _-_(Iv1,Iv2) => _-Int_(Iv1,Iv2) ... </k>
+	rule	<k> Iv1 * Iv2 => Iv1 *Int Iv2 ... </k>
+	rule	<k> Iv1 / Iv2 => Iv1 /Int Iv2 ... </k>		when notBool(Iv2 =/=Int 0)
+	rule	<k> Iv1 % Iv2 => Iv1 %Int Iv2 ... </k>		when notBool(Iv2 =/=Int 0)
+
+	rule	<k> Iv1 > Iv2 => Iv1 >Int Iv2 ... </k>
+	rule	<k> Iv1 < Iv2 => Iv1 <Int Iv2 ... </k>
+	rule	<k> Iv1 >= Iv2 => Iv1 >=Int Iv2 ... </k>
+	rule	<k> Iv1 <= Iv2 => Iv1 <=Int Iv2 ... </k>
+	rule	<k> Iv1 != Iv2 => Iv1 =/=Int Iv2 ... </k>
+	rule	<k> Iv1 == Iv2 => Iv1 ==Int Iv2 ... </k>
+
+	rule	<k> B1 or B2 => B1 orBool B1 ... </k>
+	rule	<k> B1 and B2 => B1 andBool B2 ... </k>
+	rule	<k> not B => notBool B ... </k>
+
+	rule	<k> Str1 + Str2 => Str1 +String Str2 ... </k>
+
+/* ************************************************************************** */
+
+	syntax K ::= "lookupInterface" "(" Val "," Id ")"
+	context lookupInterface(HOLE, _)
+	rule
+		<k> lookupInterface(objectClosure(Obj <classInterface> ... I |-> L ... </classInterface>), I) => V ... </k>
+		<store> ... L |-> V ... </store>
+
+	syntax K ::= "lookup" "(" Id ")"
+	rule
+		<k> lookup(I) => V ... </k>
+		<env> ... I |-> L </env>
+		<store> ... L |-> V ... </store>				/*[transition]*/
+
+	syntax K ::= "lockObject" "(" Int ")"
+	rule
+		<k> lockObject(L) => . ... </k>
+		<objStack> . => ListItem(L) ... </objStack>
+		<store> ... L |-> objectClosure(Obj <locked> false => true </locked>) ... </store>	[transition]
+
+	syntax K ::= "unlockObject" "(" ")"
+	rule
+		<k> unlockObject() => . ... </k>
+		<objStack> ListItem(L) => . ... </objStack>
+		<store> ... L |-> objectClosure(Obj <locked> true => false </locked>) ... </store>	[transition]
+
+	syntax ListItem ::= "(" Map "," K ")"
+	syntax K ::= "pushContext" "(" K ")"
+	rule
+		<k> pushContext(C) => . ... </k>
+		<env> Env => . </env>
+		<envStack> . => (Env, C) ... </envStack>
+
+	syntax K ::= "popContext" "(" Val ")"
+	rule
+		<k> popContext(V) ~> K => V ~> C </k>
+		<env> Env => Rho </env>
+		<envStack> (Rho, C) => . ... </envStack>
+
+	syntax K ::= "loadClassEnv" "(" Int ")"
+	rule
+		<k> loadClassEnv(L) => . ... </k>
+		<env> Env => Rho </env>
+		<store> ... L |-> objectClosure(Obj <classEnv> Rho </classEnv>) ... </store>
+
+	syntax K ::= "bindParams" "(" Ids "," Vals ")"
+
+	rule
+		<k> bindParams((I,Is => Is), (V,Vs => Vs)) ... </k>
+		<env> Env => Env[L/I] </env>
+		<store> ... . => L |-> V </store>
+		<nextLoc> L => L +Int 1 </nextLoc>
+	rule
+		<k> bindParams(.Ids, .Vals) => . ... </k>
+
+	syntax K ::= "lvalue" "(" Id ")"
+	rule
+		<k> lvalue(I) => loc(L) ... </k>
+		<env> ... I |-> L ... </env>
+
+/* ************************************************************************** */
+
+	rule
+		// NOTE:
+		//	Just like variable declarations in classes this assumes
+		//	that if the classStack is empty then we are executing a
+		//	method, a bit of an ugly hack but ok for now...
+		<k> var I : T := V; => . ... </k>
+		<env> ... . => I |-> L </env>
+		<store> ... . => L |-> V </store>
+		<nextLoc> L => L +Int 1 </nextLoc>
+		<classStack> .List </classStack>
+
+
+	rule
+		<k> print((V,Vs => Vs)); ... </k>
+		<output> ... . => ListItem(V) </output>				/*[transition]*/
+	rule
+		<k> print(.Vals); => . ... </k>
+
+	rule
+		<k> I => lookup(I) ... </k>
+		<env> Rho </env>
+		when I in keys(Rho)
+
+	context _ := HOLE ;
+	context (HOLE => lvalue(HOLE)) := _ ;
+	rule
+		<k> loc(L) := V ;  => . ... </k>
+		<store> ... L |-> (_ => V) ... </store>				/*[transition]*/
+
+	rule
+		<k> if (true) {Ss} else _ => Ss ... </k>
+
+	rule
+		<k> if (false) _ else {Ss} => Ss ... </k>
+
+/* ************************************************************************** */
+
+	rule
+		<k> _._(I1,I2) => lookupInterface(lookup(I1), I2) ... </k>
+
+	rule
+		<k> _`(_`)(I, Vs) => _`(_`)(lookup(I), Vs) ... </k>
+
+	rule
+		<k>
+			_`(_`)(methodClosure(OL, Is, Ss), Vs) ~> C =>
+				pushContext(C) ~>
+				lockObject(OL) ~>
+				loadClassEnv(OL) ~>
+				bindParams(Is, Vs) ~>
+				Ss ~>
+				return nothing;
+		</k>
+
+	rule
+		<k> return V; => unlockObject() ~> popContext(V) ... </k>
+
+	rule
+		<k> V; => . ... </k>
+
+/* ************************************************************************** */
+
+	syntax Val ::= "messageClosure" "(" Val "," Vals ")"
+	syntax K ::= "createMessageClosure" "(" Exp ")"
+	context createMessageClosure('_`(_`)(HOLE,,_))
+	context createMessageClosure('_`(_`)(_,,HOLE))
+	rule
+		<k> createMessageClosure(_`(_`)(V, Vs)) => messageClosure(V, Vs) ... </k>
+
+	context send (HOLE => createMessageClosure(HOLE));
+	rule
+		<message>
+			...
+			<k> send messageClosure(V, Vs) ; => . ... </k>
+			...
+		</message>
+		(. => <message>
+				<k> _`(_`)(V, Vs); </uid>
+				<uid> UID </uid>
+				<env> .Map </env>
+				<objStack> .List </objStack>
+				<envStack> .List </envStack>
+		</message>)
+		...
+		<nextUID> UID => UID +Int 1 </nextUID>
+
+	rule
+		<message>
+			...
+			<k> .K </k>
+			...
+		</message> => .
 end module

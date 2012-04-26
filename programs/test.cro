@@ -1,23 +1,24 @@
 module test {
-	class root(dummy:int) {
-		test = new test(0);
-		method init(dummy:int):void {
-			test.test2(0);
+	class root() {
+		switch = new switch();
+		method init():void {
+			switch.enable();
+			send switch.disable();
+			switch.enable();
+			switch.disable();
+			switch.enable();
 		}
 	}
 
-	class test(dummy:int) {
-		var something:int := 0;
-		var snarf:int := 0;
-		var bloerg:int := 0;
-		var dnsnsnsn:int := 0;
-		var last:int := 7;
-		method test2(dummy:int):int {
-			var snarf:int := 8;
-			dummy := snarf;
-			dummy := snarf;
-			dummy := snarf;
-			return 9;
+	class switch() {
+		var enabled:bool := false;
+
+		method enable():void {
+			enabled := true;
+		}
+
+		method disable():void {
+			enabled := false;
 		}
 	}
 }
