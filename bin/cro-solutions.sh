@@ -6,7 +6,8 @@ SOLUTIONS=0
 SOLUTIONS_ALL=`mktemp`
 SOLUTIONS_MAX=10000
 
-$KRUN --no-color --search "$@" > $SOLUTIONS_ALL
+$KRUN --no-color --search "$@" |tail -n+3 > $SOLUTIONS_ALL
+cp $SOLUTIONS_ALL test.output.tmp
 
 SOLUTIONS=`grep Solution $SOLUTIONS_ALL | wc -l`
 if test $SOLUTIONS -gt $SOLUTIONS_MAX
@@ -18,7 +19,7 @@ fi
 rm -f $PREFIX*
 rm -f $PREFIX*.bak
 
-csplit  -n 4 -s -f $PREFIX $SOLUTIONS_ALL '/Solution/' {*}
+csplit  -z -n 4 -s -f $PREFIX $SOLUTIONS_ALL '/Solution/' {*}
 
 rm $SOLUTIONS_ALL
 
