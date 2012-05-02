@@ -44,6 +44,8 @@ module CRO-CONFIG imports CRO-COMMON + CRO-SYNTAX
 			<output stream="stdout"> .List </output>
 			<br/>
 
+			<events> .List </events>
+
 			<store> .Map </store>
 			<nextLoc> 0 </nextLoc>
 		</T>

@@ -5,7 +5,7 @@ module CRO-SEMANTIC
 
 	imports CRO-COMMON + CRO-PARSER
 
-	syntax K ::= "initProgram" | "executeProgram" | "halt"
+	syntax K ::= "initProgram" | "executeProgram" | "halt" | "executeDone"
 
 	kvar I I1 I2		: Id
 	kvar Is			: Ids
@@ -203,7 +203,7 @@ module CRO-SEMANTIC
 /* ************************************************************************** */
 
 	rule
-		<k> executeProgram => _`(_`)(_._(root, init), .Vals); ... </k>
+		<k> executeProgram => send _`(_`)(_._(root, init), .Vals); ... </k>
 
 /* ************************************************************************** */
 
@@ -239,19 +239,25 @@ module CRO-SEMANTIC
 	rule
 		<k> lookup(I) => V ... </k>
 		<env> ... I |-> L </env>
-		<store> ... L |-> V ... </store>				/*[transition]*/
+		<store> ... L |-> V ... </store>
 
 	syntax K ::= "lockObject" "(" Int ")"
+	syntax K ::= "locked" "(" Int "," Int ")"
 	rule
 		<k> lockObject(L) => . ... </k>
+		<uid> UID </uid>
 		<objStack> . => ListItem(L) ... </objStack>
-		<store> ... L |-> objectClosure(Obj <locked> false => true </locked>) ... </store>	[transition]
+		<store> ... L |-> objectClosure(Obj <locked> false => true </locked>) ... </store>
+		<events> ... . => ListItem(locked(UID, L)) </events>							[transition]
 
 	syntax K ::= "unlockObject" "(" ")"
+	syntax K ::= "unlocked" "(" Int "," Int ")"
 	rule
 		<k> unlockObject() => . ... </k>
+		<uid> UID </uid>
 		<objStack> ListItem(L) => . ... </objStack>
-		<store> ... L |-> objectClosure(Obj <locked> true => false </locked>) ... </store>	[transition]
+		<store> ... L |-> objectClosure(Obj <locked> true => false </locked>) ... </store>
+		<events> ... . => ListItem(unlocked(UID, L)) </events>							[transition]
 
 	syntax ListItem ::= "(" Map "," K ")"
 	syntax K ::= "pushContext" "(" K ")"
@@ -303,7 +309,7 @@ module CRO-SEMANTIC
 
 	rule
 		<k> print((V,Vs => Vs)); ... </k>
-		<output> ... . => ListItem(V) </output>				/*[transition]*/
+		<output> ... . => ListItem(V) </output>
 	rule
 		<k> print(.Vals); => . ... </k>
 
@@ -316,13 +322,19 @@ module CRO-SEMANTIC
 	context (HOLE => lvalue(HOLE)) := _ ;
 	rule
 		<k> loc(L) := V ;  => . ... </k>
-		<store> ... L |-> (_ => V) ... </store>				/*[transition]*/
+		<store> ... L |-> (_ => V) ... </store>
 
 	rule
-		<k> if (true) {Ss} else _ => Ss ... </k>
+		<k> if (true) Ss else _ => Ss ... </k>
 
 	rule
-		<k> if (false) _ else {Ss} => Ss ... </k>
+		<k> if (false) _ else Ss => Ss ... </k>
+
+	rule
+		<k> {} => . ... </k>
+
+	rule
+		<k> {Ss} => Ss ... </k>
 
 /* ************************************************************************** */
 
@@ -358,22 +370,26 @@ module CRO-SEMANTIC
 	rule
 		<k> createMessageClosure(_`(_`)(V, Vs)) => messageClosure(V, Vs) ... </k>
 
+	syntax K ::= "sent" "(" Int ")"
 	context send (HOLE => createMessageClosure(HOLE));
 	rule
-		<message>
+		<messages>
+			<message>
+				...
+				<k> send messageClosure(V, Vs) ; => . ... </k>
+				...
+			</message>
+			(. => <message>
+					<k> _`(_`)(V, Vs); </uid>
+					<uid> UID </uid>
+					<env> .Map </env>
+					<objStack> .List </objStack>
+					<envStack> .List </envStack>
+			</message>)
 			...
-			<k> send messageClosure(V, Vs) ; => . ... </k>
-			...
-		</message>
-		(. => <message>
-				<k> _`(_`)(V, Vs); </uid>
-				<uid> UID </uid>
-				<env> .Map </env>
-				<objStack> .List </objStack>
-				<envStack> .List </envStack>
-		</message>)
-		...
+		</messages>
 		<nextUID> UID => UID +Int 1 </nextUID>
+		<events> ... . => ListItem(sent(UID))</events>				[transition]
 
 	rule
 		<message>
@@ -381,4 +397,25 @@ module CRO-SEMANTIC
 			<k> .K </k>
 			...
 		</message> => .
+
+	/* Cleanup rule for state that is "irrelevant". */
+	rule
+		<messages>
+			.Bag =>
+			<message>
+				<k> executeDone </k>
+			</message>
+		</messages>
+		<nextUID> _ => 0 </nextUID>
+		<store>
+			_ => .
+		</store>
+		<input>
+			_ => .
+		</input>
+		<output>
+			_ => .
+		</output>
+		<nextLoc> _ => 0 </nextLoc>
+
 end module

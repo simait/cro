@@ -2,14 +2,13 @@ module test {
 	class root() {
 		switch = new switch();
 		method init():void {
-			switch.enable();
 			send switch.disable();
+			switch.disable();
 			switch.enable();
 			switch.disable();
 			switch.enable();
 		}
 	}
-
 	class switch() {
 		var enabled:bool := false;
 
@@ -18,7 +17,14 @@ module test {
 		}
 
 		method disable():void {
+			if (not enabled) {
+				send notification();
+			}
 			enabled := false;
+		}
+
+		method notification():void {
+			print("Double disable!\r\n");
 		}
 	}
 }
