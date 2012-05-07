@@ -1,0 +1,23 @@
+module test4 {
+	class root() {
+		delegate0 = new delegator();
+		method init():void {
+			send delegate0.invoke(helloWorld);
+			send delegate0.invoke(helloWorld2);
+		}
+
+		method helloWorld():void {
+			print("Hello World!\r\n");
+		}
+
+		method helloWorld2():void {
+			print("Hello World(2)!\r\n");
+		}
+	}
+
+	class delegator() {
+		method invoke(m:int):void {
+			m();
+		}
+	}
+}

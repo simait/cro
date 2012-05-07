@@ -18,13 +18,13 @@ module test {
 
 		method disable():void {
 			if (not enabled) {
-				send notification();
+				send notification("Double disable!\r\n");
 			}
 			enabled := false;
 		}
 
-		method notification():void {
-			print("Double disable!\r\n");
+		method notification(msg:string):void {
+			print(msg);
 		}
 	}
 }
