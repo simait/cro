@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with CRO-EXEC.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 in cro-common
 in cro-syntax
 
@@ -29,6 +30,7 @@ module CRO-CONFIG imports CRO-COMMON + CRO-SYNTAX
 				<message multiplicity="*">
 					<k> loadedProgram($PGM:K) </k>
 					<uid> 0 </uid>
+					<baseline> 0 </baseline>
 					<env> .Map </env>
 					<objStack> .List </objStack>
 					<envStack> .List </envStack>
@@ -36,6 +38,10 @@ module CRO-CONFIG imports CRO-COMMON + CRO-SYNTAX
 			</messages>
 			<br/>
 			<nextUID> 1 </nextUID>
+			<br/>
+
+			<time> 0 </time>
+			<postponed> .List </postponed>
 			<br/>
 
 			<classes>
@@ -50,7 +56,7 @@ module CRO-CONFIG imports CRO-COMMON + CRO-SYNTAX
 			<classStack> .List </classStack>
 			<br/>
 			<classStackItem>
-				<thisClass> #id("") </thisClass>
+				<className> #id("") </className>
 				<classEnv> .Map </classEnv>
 				<classInterface> .Map </classInterface>
 				<locked> false </locked>

@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with CRO-EXEC.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 in cro-syntax
 
 module CRO-COMMON imports CRO-SYNTAX
@@ -23,7 +24,7 @@ module CRO-COMMON imports CRO-SYNTAX
 	syntax Ids	::= List{Id, ","}
 	syntax Strings	::= List{String, ","}
 
-	kvar NS I	: Id
+	kvar I		: Id
 	kvar T		: Type
 	kvar E		: Exp
 	kvar Es		: Exps

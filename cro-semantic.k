@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with CRO-EXEC.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 in cro-common
 in cro-parser
 
@@ -30,6 +31,7 @@ module CRO-SEMANTIC
 	kvar B B1 B2		: Bool
 	kvar L OL		: Int
 	kvar Iv Iv1 Iv2		: Int
+	kvar NOW		: Int
 	kvar Str1 Str2		: String
 	kvar UID		: Int
 	kvar Env Rho		: Map
@@ -55,7 +57,7 @@ module CRO-SEMANTIC
 		<k>
 			initProgram =>
 				newClass(root) ~>
-				loadClass(root, .Vals) ~>
+				loadClassBody(root, .Vals) ~>
 				storeRoot() ~>
 				parseCleanup
 			...
@@ -71,7 +73,7 @@ module CRO-SEMANTIC
 		<classStack>
 			. => ListItem(
 				obj(
-					<thisClass> I </thisClass>
+					<className> I </className>
 					<classInterface> .Map </classInterface>
 					<classEnv> .Map </classEnv>
 					<locked> false </locked>
@@ -82,9 +84,9 @@ module CRO-SEMANTIC
 		</classStack>
 		<nextLoc> L => L +Int 1 </nextLoc>
 
-	syntax K ::= "loadClass" "(" Id "," Vals ")"
+	syntax K ::= "loadClassBody" "(" Id "," Vals ")"
 	rule
-		<k> loadClass(I, Vs) => bindClassParams(Is, Vs) ~> Ss ... </k>
+		<k> loadClassBody(I, Vs) => bindClassParams(Is, Vs) ~> Ss ... </k>
 		<class>
 			<name> I </name>
 			<params> Is </params>
@@ -198,7 +200,7 @@ module CRO-SEMANTIC
 		<k>
 			I1 = new I2(Vs); =>
 				newClass(I2) ~>
-				loadClass(I2, Vs) ~>
+				loadClassBody(I2, Vs) ~>
 				storeClass(I1)
 			...
 		</k>
@@ -400,6 +402,7 @@ module CRO-SEMANTIC
 			(. => <message>
 					<k> _`(_`)(V, Vs); </uid>
 					<uid> UID </uid>
+					<baseline> NOW </baseline>
 					<env> .Map </env>
 					<objStack> .List </objStack>
 					<envStack> .List </envStack>
@@ -407,8 +410,12 @@ module CRO-SEMANTIC
 			...
 		</messages>
 		<nextUID> UID => UID +Int 1 </nextUID>
-		<events> ... . => ListItem(sent(UID))</events>				[transition]
+		<events> ... . => ListItem(sent(UID))</events>
+		<time> NOW </time>							[transition]
+	
+/* ************************************************************************** */
 
+	/* Cleanup-rule for messages. */
 	rule
 		<message>
 			...
@@ -416,7 +423,7 @@ module CRO-SEMANTIC
 			...
 		</message> => .
 
-	/* Cleanup rule for state that is "irrelevant". */
+	/* Cleanup-rule for state that is "irrelevant". */
 	rule
 		<messages>
 			.Bag =>

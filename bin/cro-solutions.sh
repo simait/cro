@@ -6,6 +6,11 @@ SOLUTIONS=0
 SOLUTIONS_ALL=`mktemp`
 SOLUTIONS_MAX=10000
 
+SCRIPT_FILE=$0
+test -L $SCRIPT_FILE && SCRIPT_FILE=`readlink $SCRIPT_FILE`
+SCRIPT_DIR=`dirname $SCRIPT_FILE`
+source $SCRIPT_DIR/cro-common.sh
+
 $KRUN --no-color --search "$@" |tail -n+3 > $SOLUTIONS_ALL
 cp $SOLUTIONS_ALL test.output.tmp
 
@@ -26,6 +31,11 @@ rm $SOLUTIONS_ALL
 for i in "${PREFIX}*"
 do
 	sed --in-place --expression '/Solution/d' $i
+	if ! executeOK $i
+	then
+		echo "Execution didn't complete successfully! (see ${i})" >> /dev/stderr
+		exit 1
+	fi
 done
 
 rm -f $PREFIX*.bak

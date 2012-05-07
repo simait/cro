@@ -16,6 +16,7 @@
  * You should have received a copy of the GNU General Public License
  * along with CRO-EXEC.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 module CRO-SYNTAX
 
 	// "root" and "init" are a part of all programs (for now...)
