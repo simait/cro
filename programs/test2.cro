@@ -1,4 +1,5 @@
 module test {
+
 	class root() {
 		test = new test(0);
 		test2 = new test(1);
@@ -21,6 +22,7 @@ module test {
 			send test2.test4(str);
 		}
 	}
+
 	class test(id:int) {
 		method test(d0:int, d1:int, d2:int):int {
 			if (d1 > d2) {
@@ -47,4 +49,5 @@ module test {
 			print(str);
 		}
 	}
+
 }

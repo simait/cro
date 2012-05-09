@@ -1,4 +1,5 @@
 module test {
+
 	class root() {
 		printer0 = new printer();
 		printer1 = new printer();
@@ -15,4 +16,5 @@ module test {
 			print(str);
 		}
 	}
+
 }

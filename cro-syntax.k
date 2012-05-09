@@ -61,7 +61,8 @@ module CRO-SYNTAX
 		| "bool"
 		| "string"
 		| "object"
-		| "int" "[" Int "]"
+		| Type "[" Int "]"
+// 		| "int" "[" Int "]"
 		| "from" Types "to" Type				[latex("{1}~\rightarrow~{2}")]
 	syntax Types ::= List{Type, ","}
 

@@ -268,7 +268,7 @@ module CRO-SEMANTIC
 		<uid> UID </uid>
 		<objStack> . => ListItem(L) ... </objStack>
 		<store> ... L |-> objectClosure(Obj <locked> false => true </locked>) ... </store>
-		<events> ... . => ListItem(locked(UID, L)) </events>							[transition]
+		<events> ... . => ListItem(locked(UID, L)) </events>		[transition]
 
 	syntax K ::= "unlockObject" "(" ")"
 	syntax K ::= "unlocked" "(" Int "," Int ")"
@@ -277,7 +277,7 @@ module CRO-SEMANTIC
 		<uid> UID </uid>
 		<objStack> ListItem(L) => . ... </objStack>
 		<store> ... L |-> objectClosure(Obj <locked> true => false </locked>) ... </store>
-		<events> ... . => ListItem(unlocked(UID, L)) </events>							[transition]
+		<events> ... . => ListItem(unlocked(UID, L)) </events>		[transition]
 
 	syntax ListItem ::= "(" Map "," K ")"
 	syntax K ::= "pushContext" "(" K ")"
@@ -299,7 +299,6 @@ module CRO-SEMANTIC
 		<store> ... L |-> objectClosure(Obj <classEnv> Rho </classEnv>) ... </store>
 
 	syntax K ::= "bindParams" "(" Ids "," Vals ")"
-
 	rule
 		<k> bindParams((I,Is => Is), (V,Vs => Vs)) ... </k>
 		<env> Env => Env[L/I] </env>
@@ -394,13 +393,14 @@ module CRO-SEMANTIC
 	context send (HOLE => createMessageClosure(HOLE));
 	rule
 		<messages>
+			...
 			<message>
 				...
 				<k> send messageClosure(V, Vs) ; => . ... </k>
 				...
 			</message>
 			(. => <message>
-					<k> _`(_`)(V, Vs); </uid>
+					<k> _`(_`)(V, Vs); </k>
 					<uid> UID </uid>
 					<baseline> NOW </baseline>
 					<env> .Map </env>
@@ -410,9 +410,9 @@ module CRO-SEMANTIC
 			...
 		</messages>
 		<nextUID> UID => UID +Int 1 </nextUID>
-		<events> ... . => ListItem(sent(UID))</events>
+		<events> ... . => ListItem(sent(UID)) </events>
 		<time> NOW </time>							[transition]
-	
+
 /* ************************************************************************** */
 
 	/* Cleanup-rule for messages. */

@@ -1,9 +1,11 @@
 module test4 {
+
 	class root() {
 		delegate0 = new delegator();
 		method init():void {
 			send delegate0.invoke(helloWorld);
 			send delegate0.invoke(helloWorld2);
+			send delegate0.invoke(0);
 		}
 
 		method helloWorld():void {
@@ -20,4 +22,5 @@ module test4 {
 			m();
 		}
 	}
+
 }

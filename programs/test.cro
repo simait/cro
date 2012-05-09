@@ -1,14 +1,18 @@
 module test {
+
 	class root() {
+
 		switch = new switch();
+
 		method init():void {
-			send switch.disable();
+			send switch.enable();
 			switch.disable();
 			switch.enable();
 			switch.disable();
-			switch.enable();
 		}
+
 	}
+
 	class switch() {
 		var enabled:bool := false;
 
@@ -27,4 +31,5 @@ module test {
 			print(msg);
 		}
 	}
+
 }
