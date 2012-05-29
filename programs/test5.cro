@@ -1,0 +1,31 @@
+module test4 {
+
+	class root() {
+		inv0 = new invoker();
+		inv1 = new invoker();
+
+		method init():void {
+			inv0.setCallback(inv1.update);
+			inv1.setCallback(inv0.update);
+
+			send inv0.invoke();
+			send inv1.invoke();
+		}
+	}
+
+	class invoker() {
+		var callback:int := 0;
+
+		method setCallback(cb:int):void {
+			callback := cb;
+		}
+
+		method update():void {
+		}
+
+		method invoke():void {
+			callback();
+		}
+	}
+
+}
