@@ -20,3 +20,6 @@ test3: cro-compiled.maude
 ast: cro-compiled.maude
 	kast programs/test.cro && echo
 #kast --k-definition ./cro --main-module CRO --syntax-module CRO-SYNTAX programs/test.cro && echo
+
+clean:
+	touch cro.k
