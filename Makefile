@@ -1,25 +1,28 @@
-all: cro-compiled.maude
+all: Makefile cro-core-compiled.maude
 
-pdf: cro.pdf
+pdf: cro-core.pdf
 
-cro-compiled.maude: cro.k cro-*.k
-	kompile cro
+cro-core-compiled.maude: cro-core*.k
+	kompile cro-core
+
+cro-core.pdf: cro-core*.k
+	kompile --pdf cro-core
 
 cro.pdf: cro.k cro-*.k
 	kompile --pdf cro
 
-test: cro-compiled.maude
+test: cro-core-compiled.maude
 	krun programs/test.cro
 
-test2: cro-compiled.maude
+test2: cro-core-compiled.maude
 	krun programs/test2.cro
 
-test3: cro-compiled.maude
+test3: cro--core-compiled.maude
 	krun programs/test3.cro
 
-ast: cro-compiled.maude
+ast: cro-core-compiled.maude
 	kast programs/test.cro && echo
 #kast --k-definition ./cro --main-module CRO --syntax-module CRO-SYNTAX programs/test.cro && echo
 
 clean:
-	touch cro.k
+	touch *.k

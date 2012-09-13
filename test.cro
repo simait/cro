@@ -1,0 +1,13 @@
+module test {
+	class test(x) {
+		var blaergh := 2;
+		method snarf() {
+		}
+	}
+	class root() {
+		t = new test(4);
+		method init() {
+			send init();
+		}
+	}
+}

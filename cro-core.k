@@ -17,22 +17,21 @@
  * along with CRO-EXEC.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-in cro-common
-in cro-syntax
-in cro-config
-in cro-parser
-in cro-semantic
 
-module CRO imports CRO-COMMON + CRO-SYNTAX + CRO-CONFIG + CRO-PARSER + CRO-SEMANTIC
+require "cro-core-syntax.k"
+require "cro-core-config.k"
+require "cro-core-parser.k"
+require "cro-core-semantic.k"
+require "cro-core-init.k"
 
-	kvar S1 S2		: Stmts
-	kvar P			: K
+module CRO-CORE
+	imports CRO-CORE-CONFIG
+	imports CRO-CORE-SYNTAX
+	imports CRO-CORE-PARSER
+	imports CRO-CORE-SEMANTIC
+	imports CRO-CORE-INIT
 
-	// Ensure sequential execution of commands.
-	rule	S1 S2 => S1 ~> S2														[structural]
-
-	//@ First rule, the loded program is in the <k> cell, we "lift" it and start the process of parsing and validating.
 	rule
-		<k> loadedProgram(P) => parseProgram(P) ~> initProgram ~> executeProgram </k>
+		<k> programLoaded(P:K) => programParse(P) ~> programInit ~>programExecute </k>
 
-end module
+endmodule

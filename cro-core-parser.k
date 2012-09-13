@@ -17,43 +17,34 @@
  * along with CRO-EXEC.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-in cro-config
-in cro-common
-in cro-syntax
+require "cro-core-syntax.k"
+require "cro-core-config.k"
 
-module CRO-PARSER imports CRO-COMMON + CRO-SYNTAX + CRO-CONFIG
+module CRO-CORE-PARSER
+	imports CRO-CORE-SYNTAX
+	imports CRO-CORE-CONFIG
 
-	syntax K ::= "parseProgram" "(" K ")" | "parseCleanup"
+	syntax K ::= "programParse" "(" K ")" | "parseCleanup"
 
-	kvar I				: Id
-	kvar Es				: Exps
-	kvar Ss				: Stmts
-	kvar Clss			: Bag
-	kvar P				: K
+	syntax K ::= "class" "(" Ids "," Cmds ")"
 
 /* ************************************************************************** */
 
 	rule
-		<k> parseProgram(P) => P ... </k>
+		<k> programParse(P:K) => P ... </k>
 
 	rule
 		<k> parseCleanup => . ... </k>
 		<classes>
-			Clss => .
+			Clss:Bag => .
 		</classes>
 
 	rule
-		<k> module I {Ss} => Ss ... </k>
+		<k> module I:Id {Cs:Cmds} => Cs ... </k>
 
 	rule
-		<k> class I (Es) {Ss} => . ... </k>
-		<classes>
-			(. => <class>
-				<name> I </name>
-				<params> ids(Es) </params>
-				<declarations> Ss </declarations>
-			</class>)
-			...
-		</classes>
+		<k> class I:Id (Is:Ids) {Cs:Cmds} => . ... </k>
+		<classes> (. => I |-> class (Is, Cs)) Rho:Map </classes>
+		when notBool(I in keys(Rho))
 
-end module
+endmodule
