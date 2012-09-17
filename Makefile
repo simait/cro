@@ -3,13 +3,13 @@ all: Makefile cro-core-compiled.maude
 pdf: cro-core.pdf
 
 cro-core-compiled.maude: cro-core*.k
-	notify-completion.sh "kompile cro-core"
+	kompile cro-core
 
 cro-core.pdf: cro-core*.k
-	notify-completion.sh "kompile --pdf cro-core"
+	kompile --pdf cro-core
 
 cro.pdf: cro.k cro-*.k
-	notify-completion.sh "kompile --pdf cro"
+	kompile --pdf cro
 
 test: cro-core-compiled.maude
 	krun programs/test.cro
