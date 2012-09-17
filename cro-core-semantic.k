@@ -20,28 +20,12 @@
 require "cro-core-parser.k"
 require "cro-core-init.k"
 
-module CRO-CORE-SEMANTIC
+/* ************************************************************************** */
+
+module CRO-CORE-SEMANTIC-CONTEXTS
 
 	imports CRO-CORE-SYNTAX
 	imports CRO-CORE-INIT
-
-/* ************************************************************************** */
-
-	syntax K ::= "programExecute" | "halt" | "programDone"
-
-/* ************************************************************************** */
-
-	syntax Value ::=
-		"location" "(" Int ")"
-
-/* ************************************************************************** */
-
-	syntax KResult ::= Value
-
-/* ************************************************************************** */
-
-	rule	/* Invoke the init method of the root object. */
-		<k> programExecute => '_._(root,, init) ~> /*lookup(root) ~> */'_`(_`)('_._(root,, init),, .Values); ... </k>
 
 /* ************************************************************************** */
 
@@ -49,13 +33,202 @@ module CRO-CORE-SEMANTIC
 	rule
 		<k> lookup(X I |-> V Y, I:Id) => V:Value ... </k>
 
+/* ************************************************************************** */
+
 	rule
-		<k> I:Id => lookup(M:Map, I) ... </k>
-		<contexts> (_, M) ... </k>
+		<k> I:Id => lookup(Env:Map, I) ... </k>
+		<contexts> (_:Location, Env, _:K) ... </k>
+
+/* ************************************************************************** */
+
+	syntax K ::= "contextEnter" "(" Location "," K ")"
+	rule
+		<k> contextEnter(location(L:Int), K:K) => . ... </k>
+		<contexts> . => (location(L), If:Map[B:Map[S:Map]], K) ... </contexts>
+		<store>
+			...
+				L |-> objectClosure(
+					X
+					<interface> If </interface>
+					<bindings> B </bindings>
+					<state> S </state>
+					Y
+				)
+			...
+		</store>
+
+/* ************************************************************************** */
+
+	syntax K ::= "contextLeave" "(" Value ")"
+	rule
+		<k> contextLeave(V:Value) ~> _:K => V ~> K:K </k>
+		<contexts> (_:Location,_:Map, K) => . ... </contexts>
+
+
+/* ************************************************************************** */
+
+	syntax K ::= "contextBindAdd" "(" Id "," Value ")"
+	rule
+		<k> contextBindAdd(I:Id, V:Value) => . ... </k>
+		<contexts> (_:Location, Env:Map => Env[V/I], _:K) ... </contexts>
+
+/* ************************************************************************** */
+
+	syntax K ::= "this"
+	rule
+		<k> this => L:Location ... </k>
+		<contexts> (L, _:Map, _:K) ... </contexts>
+
+/* ************************************************************************** */
+
+endmodule
+
+/* ************************************************************************** */
+
+module CRO-CORE-SEMANTIC-OBJECTS
+
+	imports CRO-CORE-SYNTAX
+	imports CRO-CORE-INIT
+	imports CRO-CORE-SEMANTIC-CONTEXTS
+
+/* ************************************************************************** */
+
+	syntax K ::= "objectActivate" "(" Location ")"				[strict]
+	rule
+		<k> objectActivate(location(L:Int)) => . ... </k>
+		<store>
+			...
+				L |-> objectClosure(
+					X
+					<active> false => true </active>
+					Y
+				)
+			...
+		</store>
+
+/* ************************************************************************** */
+
+	syntax K ::= "objectDeactivate" "(" Location ")"			[strict]
+	rule
+		<k> objectDeactivate(location(L:Int)) => . ... </k>
+		<store>
+			...
+				L |-> objectClosure(
+					X
+					<active> true => false </active>
+					Y
+				)
+			...
+		</store>
+
+/* ************************************************************************** */
 
 	context	'_._(HOLE,, _:Id)
 	rule
-		<k> '_._(objectClosure(If:Map, _, _),, I:Id) => lookup(If, I) ... </k>
+		<k> '_._(location(L:Int),, I:Id) => '_._(valueLoad(L),, I) ... </k>
+	rule
+		<k> '_._(objectClosure(X <interface> If:Map </interface> Y),, I:Id) => lookup(If, I) ... </k>
+
+/* ************************************************************************** */
+
+	rule
+		<k> location(L:Int) := V:Value ; => . ... </k>
+		<store> Rho:Map => Rho[V/L] </store>
+
+/* ************************************************************************** */
+
+endmodule
+
+/* ************************************************************************** */
+
+module CRO-CORE-SEMANTIC-MESSAGES
+
+	imports CRO-CORE-SYNTAX
+	imports CRO-CORE-INIT
+	imports CRO-CORE-SEMANTIC-CONTEXTS
+	imports CRO-CORE-SEMANTIC-OBJECTS
+
+/* ************************************************************************** */
+
+	syntax MessageClosure ::= "messageClosure" "(" Exp ")"
+
+	syntax K ::= "messageDone"
+
+	syntax Value ::= MessageClosure
+
+/* ************************************************************************** */
+
+	syntax K ::= "methodParamsBind" "(" Ids "," Values ")"
+	rule
+		<k> methodParamsBind(.Ids, .Values) => . ... </k>		[structural]
+	rule
+		<k>
+			methodParamsBind((I:Id,Is:Ids), (V:Value,Vs:Values)) =>
+				contextBindAdd(I, V) ~>
+				methodParamsBind(Is, Vs)
+			...
+		</k>
+
+/* ************************************************************************** */
+
+	rule
+		<k> '_`(_`)(location(L:Int),, Vs:Values) => '_`(_`)(valueLoad(L),, Vs) ... </k>
+	rule
+		<k> '_`(_`)(methodClosure(
+				<object> L:Location </object>
+				<params> Is:Ids </params>
+				<commands> Cs:Cmds </commands>
+			),, Vs:Values) ~> Return:K =>
+				contextEnter(L, Return) ~>
+				objectActivate(this) ~>
+				methodParamsBind(Is, Vs) ~>
+				Cs ~>
+				return nothing; ~>
+				messageDone
+		</k>
+
+/* ************************************************************************** */
+
+	rule
+		<k>
+			return V:Value; =>
+				objectDeactivate(this) ~>
+				contextLeave(V)
+			...
+		</k>
+
+/* ************************************************************************** */
+
+	syntax K ::= "messageClosureCreate" "(" Exp ")"
+	context messageClosureCreate('_`(_`)(HOLE,, _))
+	context messageClosureCreate('_`(_`)(_,, HOLE))
+	rule
+		<k> messageClosureCreate('_`(_`)(location(L:Int),, Vs:Values) => '_`(_`)(valueLoad(L),, Vs)) ... </k>
+
+	rule
+		<k> messageClosureCreate('_`(_`)(M:Method,, Vs:Values)) => messageClosure('_`(_`)(M,, Vs)) ... </k>
+	context send (HOLE => messageClosureCreate(HOLE));
+	rule
+			<message>
+				... <k> send messageClosure('_`(_`)(M:Method,, Vs:Values)) ; => . ... </k> ...
+			</message>
+			(. =>
+				<message>
+					<k> '_`(_`)(M,, Vs); ~> messageDone </k>
+					<contexts> .List </contexts>
+				</message>
+			)
+
+/* ************************************************************************** */
+
+	rule
+		<k> V:Value ; => . ... </k>
+
+/* ************************************************************************** */
+
+endmodule
+
+
 /* ************************************************************************** */
 
 // 	rule	<k> - Iv => 0 -Int Iv ... </k>
@@ -77,9 +250,27 @@ module CRO-CORE-SEMANTIC
 // 	rule	<k> not B => notBool B ... </k>
 //
 // 	rule	<k> Str1 + Str2 => Str1 +String Str2 ... </k>
-//
+
 /* ************************************************************************** */
 
+module CRO-CORE-SEMANTIC
 
+	imports CRO-CORE-SEMANTIC-CONTEXTS
+	imports CRO-CORE-SEMANTIC-MESSAGES
+
+/* ************************************************************************** */
+
+	syntax K ::= "programEval" | "programDone"// | "halt"
+
+/* ************************************************************************** */
+
+	syntax KResult ::= Value
+
+/* ************************************************************************** */
+
+	rule	/* Invoke the init method of the root object. */
+		<k> programEval => '_`(_`)('_._(root,, init),, .Values); ~> messageDone ... </k>
+
+/* ************************************************************************** */
 
 endmodule

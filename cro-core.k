@@ -32,6 +32,6 @@ module CRO-CORE
 	imports CRO-CORE-INIT
 
 	rule
-		<k> programLoaded(P:K) => programParse(P) ~> programInit ~>programExecute </k>
+		<k> programLoaded(P:K) => programParse(P) ~> programInit ~> programEval </k>
 
 endmodule

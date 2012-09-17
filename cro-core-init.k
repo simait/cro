@@ -24,24 +24,35 @@ module CRO-CORE-INIT
 	imports CRO-CORE-SYNTAX
 	imports CRO-CORE-PARSER
 
-	syntax Object ::= "objectClosure" "(" Map "," Map "," Map ")"
-	syntax Method ::= "methodClosure" "(" Ids "," Cmds ")"
+	syntax Object ::= "objectClosure" "(" Bag ")" //Map "," Map "," Map ")" | "objectNone"
+	syntax Method ::= "methodClosure" "(" Bag ")" /* "," Ids "," Cmds ")"*/
 
-	syntax ListItem ::= "(" Value "," Map ")"
+	syntax ListItem ::= "(" Location "," Map "," K ")"
+
+	syntax Location ::= "location" "(" Int ")" | "locationVoid"
 
 	syntax Value ::=
 		Object
 		| Method
+		| Location
 
-	syntax Id ::= "active"
+	syntax CellLabel ::= "interface" | "bindings" | "state" | "active"
+// 	syntax ObjectLabel ::= "interface" | "bindings" | "state" | "active"
+// 	syntax CellLabel ::= ObjectLabels
+
+	syntax CellLabel ::= "object" | "params" | "commands"
+// 	syntax MethodLabel ::= "parameters" | "commands"
+// 	syntax CellLabel ::= MethodLabel
 
 	syntax K ::= "programInit"
+
+	syntax KResult ::= Value
 
 /* ************************************************************************** */
 
 	syntax K ::= "valueStore" "(" Value ")"					[strict]
 	rule
-		<k> valueStore( V:Value ) => L:Int ... </k>
+		<k> valueStore( V:Value ) => location(L:Int) ... </k>
 		<store> (. => L |-> V) Rho:Map </store>
 		<nextLocation> L => L +Int 1 </nextLocation>
 		when notBool(L in keys(Rho))
@@ -55,12 +66,12 @@ module CRO-CORE-INIT
 
 /* ************************************************************************** */
 
-	syntax K ::= "objectBindAdd" "(" Id "," Int ")"				[strict(2)]
+	syntax K ::= "objectBindAdd" "(" Id "," Value ")"			[strict(2)]
 	syntax K ::= "objectBindAddAll" "(" Ids "," Values ")"			[strict(2)]
-	syntax K ::= "objectStateAdd" "(" Id "," Int ")"			[strict(2)]
-	syntax K ::= "objectInterfaceAdd" "(" Id "," Int ")"			[strict(2)]
+	syntax K ::= "objectStateAdd" "(" Id "," Location ")"			[strict(2)]
+	syntax K ::= "objectInterfaceAdd" "(" Id "," Location ")"		[strict(2)]
 	syntax K ::= "objectCreate" "(" Id "," Values ")"			[strict(2)]
-	syntax K ::= "objectPush" "(" Object ")"				[strict]
+	syntax K ::= "objectPush" "(" Location ")"				[strict]
 	syntax K ::= "objectPop" "(" ")"
 
 /* ************************************************************************** */
@@ -70,8 +81,8 @@ module CRO-CORE-INIT
 /* ************************************************************************** */
 
 	rule
-		<k> contextsInit(O:Object) => . ... </k>
-		<contexts> . => (nothing, root |-> O) </contexts>
+		<k> contextsInit(O:Location) => . ... </k>
+		<contexts> . => (locationVoid, root |-> O, .K) </contexts>
 
 /* ************************************************************************** */
 
@@ -83,8 +94,17 @@ module CRO-CORE-INIT
 	rule	/* Object creation. */
 		<k>
 			objectCreate(I:Id, Vs:Values) =>
-				objectPush(objectClosure(.Map, .Map, .Map)) ~>
-				objectStateAdd(active, valueStore(false)) ~>
+				objectPush(
+					valueStore(
+						objectClosure(
+							<interface> .Map </interface>
+							<bindings> .Map </bindings>
+							<state> .Map </state>
+							<active> false </active>
+						)
+					)
+				) ~>
+// 				objectStateAdd(active, valueStore(false)) ~>
 				objectBindAddAll(Is:Ids, Vs) ~>
 				Cs:Cmds ~>
 				objectPop()
@@ -99,42 +119,87 @@ module CRO-CORE-INIT
 /* ************************************************************************** */
 
 	rule	/* Push object onto context stack. */
-		<k> objectPush(O:Object) => . ... </k>
+		<k> objectPush(O:Location) => . ... </k>
 		<contexts> . => ListItem(O) ... </contexts>
 
 	rule	/* Leave object from context stack. */
-		<k> objectPop() => O:Object ... </k>
+		<k> objectPop() => O:Location ... </k>
 		<contexts> ListItem(O) => . ... </contexts>
 
 /* ************************************************************************** */
 
 	rule	/* Add identifier to the object interface. */
-		<k> objectInterfaceAdd(I:Id, V:Value) => . ... </k>
-		<contexts> ListItem(objectClosure(Interface:Map => Interface[V/I], _, _)) ... </contexts>
+		<k> objectInterfaceAdd(I:Id, L:Location) => . ... </k>
+		<contexts> ListItem(location(O:Int)) ... </contexts>
+		<store>
+			...
+				O |-> objectClosure(
+					X
+					<interface> If:Map => If[L/I] </interface>
+					Y
+				)
+			...
+		</store>
 
 /* ************************************************************************** */
 
 	rule	/* Add a single binding. */
 		<k> objectBindAdd(I:Id, V:Value) => . ... </k>
-		<contexts> ListItem(objectClosure(_, Bindings:Map => Bindings[V/I], _)) ... </contexts>
+		<contexts> ListItem(location(O:Int)) ... </contexts>
+		<store>
+			...
+				O |-> objectClosure(
+					X
+					<bindings> B:Map => B[V/I] </bindings>
+					Y
+				)
+			...
+		</store>
 
 	rule	/* Termination condition (base-case). */
 		<k> objectBindAddAll(.Ids, .Values) => . ... </k>		[structural]
 
 	rule	/* Bind one value and recurse over the tail. */
-		<k> objectBindAddAll((I:Id,Is:Ids), (V:Value,Vs:Values)) => objectBindAdd(I, V) ~> objectBindAddAll(Is, Vs) ... </k>
+		<k>
+			objectBindAddAll((I:Id,Is:Ids), (V:Value,Vs:Values)) =>
+				objectBindAdd(I, V) ~>
+				objectBindAddAll(Is, Vs)
+			...
+		</k>
 
 /* ************************************************************************** */
 
 	rule	/* Add a state variable. */
-		<k> objectStateAdd(I:Id, L:Int) => . ... </k>
-		<contexts> ListItem(objectClosure(_, _, State:Map => State[L/I])) ... </contexts>
+		<k> objectStateAdd(I:Id, L:Location) => . ... </k>
+		<contexts> ListItem(location(O:Int)) ... </contexts>
+		<store>
+			...
+				O |-> objectClosure(
+					X
+					<state> S:Map => S[L/I] </state>
+					Y
+				)
+			...
+		</store>
 
 /* ************************************************************************** */
 
 
 	rule	/* Method declaration. */
-		<k> method I:Id (Is:Ids) {Cs:Cmds} => objectInterfaceAdd(I, methodClosure(Is, Cs)) ... </k>
+		<k>
+			method I:Id (Is:Ids) {Cs:Cmds} =>
+				objectInterfaceAdd(I,
+					valueStore(
+						methodClosure(
+							<object> O </object>
+							<params> Is </params>
+							<commands> Cs </commands>
+						)
+					)
+				)
+			...
+		</k>
+		<contexts> ListItem(O:Location) ... </contexts>
 
 /* ************************************************************************** */
 

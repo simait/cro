@@ -28,8 +28,8 @@ module CRO-CORE-SYNTAX
 	syntax Exp ::=
 		Value
 		| Id
-		| Exp "." Id							[left]
-		> Exp "(" Exps ")"						[strict]
+		| Exp "." Id
+		| Exp "(" Exps ")"						[strict]
 		| "(" Exp ")"							[bracket]
 
 		syntax Exps ::= List{Exp, ","}					[strict]
@@ -37,14 +37,16 @@ module CRO-CORE-SYNTAX
 	syntax Cmd ::=
 		"{" "}"
 		| "{" Cmds "}"
-		| Exp ";"
-		| "return" Exp ";"
+		| Exp ";"							[strict]
+		| Exp ":=" Exp ";"						[strict]
 		| "send" Exp ";"
+		| "return" Exp ";"
+		| "halt" ";"
 
 	syntax Cmds ::=
 		Decl
 		| Cmd
-		> Cmds Cmds
+		| Cmds Cmds							[right]
 
 	syntax Decl ::= "method" Id "(" Ids ")" Cmd
 	syntax Decl ::= "var" Exp ":=" Value ";"
@@ -63,7 +65,7 @@ module CRO-CORE-SYNTAX
 	syntax Module ::= "module" Id Cmd
 
 	// Make things easier to write semantics for...
-	rule method I:Id (Is:Ids) {} => method I (Is) {return 0;}
+	rule method I:Id (Is:Ids) {} => method I (Is) {return nothing;}
 
 	// Ensure that we have sequential execution of Cmds.
 	rule	C0:Cmds C1:Cmds => C0 ~> C1					[structural]

@@ -1,13 +1,19 @@
 module test {
 	class test(x) {
 		var blaergh := 2;
-		method snarf() {
+		method snarf(v) {
+			blaergh := 42;
+			v();
 		}
 	}
 	class root() {
 		t = new test(4);
+
+		method done() {
+		}
+
 		method init() {
-			send init();
+			send t.snarf(done);
 		}
 	}
 }

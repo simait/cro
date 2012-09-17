@@ -39,12 +39,12 @@ module CRO-CORE-CONFIG
 // 			<k> loadedProgram($PGM:Module) </k>
 // 			<root> loadedProgram($PGM:K) </root>
 			<messages>
-				<message multiplicity="*">
-					<k> programLoaded($PGM:K) </k>
+				<message multiplicity="*" color="yellow">
+					<k color="green"> programLoaded($PGM:K) </k>
 // 					<uid> 0 </uid>
 // 					<baseline> 0 </baseline>
 // 					<env> .Map </env>
-					<contexts> .List </contexts>
+					<contexts color="magenta"> .List </contexts>
 // 					<objStack> .List </objStack>
 // 					<environmentStack> .List </environmentStack>
 				</message>
@@ -58,7 +58,7 @@ module CRO-CORE-CONFIG
 // 			<postponed> .List </postponed>
 // 			<br/>
 //
-			<classes>
+			<classes color="purple">
 // 				<class multiplicity="*">
 // 					<name> "" </name>
 // 					<params> .List </params>
@@ -87,8 +87,8 @@ module CRO-CORE-CONFIG
 //
 // 			<events> .List </events>
 
-			<store> .Map </store>
-			<nextLocation> 0 </nextLocation>
+			<store color="red"> .Map </store>
+			<nextLocation color="blue"> 0 </nextLocation>
 		</T>
 
 endmodule
