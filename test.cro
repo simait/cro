@@ -5,14 +5,20 @@ module test {
 			v();
 			if (blaergh > 2) {
 				blaergh := 53;
+			} else {
+				blaergh := 42;
 			}
-			blaergh := 42;
 		}
 	}
 	class root() {
 		t = new test(4);
 
+		var g := 5;
+
 		method done() {
+			while (g < 10) {
+				g := g + 1;
+			}
 		}
 
 		method init() {
