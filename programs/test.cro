@@ -21,9 +21,7 @@ module test {
 		}
 
 		method disable() {
-			if (not enabled) {
-				send notification("Double disable!\r\n");
-			}
+			send notification("Double disable!\r\n");
 			enabled := false;
 		}
 
