@@ -25,70 +25,27 @@ module CRO-CORE-CONFIG
 
 	syntax K ::= "programLoaded" "(" K ")"
 
-// 	syntax ListItem ::= "(" Bag "," Map ")"
-
-// 	syntax CellLabel ::= "classes" | "class" | "name" | "params" | "declarations"
-
-// 	syntax Value ::= "nothing"
-// 	syntax Context ::= "(" Int "," Map ")"
-// 	syntax Contexts ::= List{Context, ","}
-
-
 	configuration
 		<T>
-// 			<k> loadedProgram($PGM:Module) </k>
-// 			<root> loadedProgram($PGM:K) </root>
 			<messages>
 				<message multiplicity="*" color="yellow">
 					<k color="green"> programLoaded($PGM:K) </k>
-// 					<uid> 0 </uid>
-// 					<baseline> 0 </baseline>
-// 					<env> .Map </env>
 					<contexts color="magenta"> .List </contexts>
-// 					<objStack> .List </objStack>
-// 					<environmentStack> .List </environmentStack>
 				</message>
 			</messages>
 
-// 			<br/>
-// 			<nextUID> 1 </nextUID>
-// 			<br/>
-//
-// 			<time> 0 </time>
-// 			<postponed> .List </postponed>
-// 			<br/>
-//
 			<classes color="purple">
-// 				<class multiplicity="*">
-// 					<name> "" </name>
-// 					<params> .List </params>
-// 					<declarations> .List </declarations>
-// 				</class>
 				.Map
 			</classes>
-// 			<br/>
-
-// 			<parseStack> .List </parseStack>
-// 			<classStack> .List </classStack>
-// 			<br> </br>
-// 			<br/>
-// 			<classStackItem>
-// 				<className> #id("") </className>
-// 				<classEnv> .Map </classEnv>
-// 				<classInterface> .Map </classInterface>
-// 				<locked> false </locked>
-// 				<location> 0 </location>
-// 			</classStackItem>
-// 			<br/>
-//
-// 			<input stream="stdin"> $IN:List </input>
-// 			<output stream="stdout"> .List </output>
-// 			<br/>
-//
-// 			<events> .List </events>
 
 			<store color="red"> .Map </store>
 			<nextLocation color="blue"> 0 </nextLocation>
+
+// 			<input stream="stdin"> $IN:List </input>
+// 			<output stream="stdout"> .List </output>
+// 			<br/>
+
+
 		</T>
 
 endmodule
