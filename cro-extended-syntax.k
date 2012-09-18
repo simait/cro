@@ -48,6 +48,7 @@ module CRO-EXTENDED-SYNTAX
 	syntax Cmd ::=
 		"if" "(" Exp ")" Cmd						[strict(1)]
 		| "if" "(" Exp ")" Cmd "else" Cmd				[strict(1)]
+		| "print" "(" Exp ")" ";"					[strict]
 		| "while" "(" Exp ")" Cmd
 
 endmodule

@@ -21,7 +21,6 @@ require "cro-extended-syntax.k"
 
 module CRO-EXTENDED-SEMANTIC
 
-// 	imports CRO-CORE-INIT
 	imports CRO-EXTENDED-SYNTAX
 
 /* ************************************************************************** */
@@ -61,6 +60,12 @@ module CRO-EXTENDED-SEMANTIC
 /* ************************************************************************** */
 
 	rule	<k> while (E:Exp) {Cs:Cmds} => if (E) {Cs while (E) {Cs}} ... </k>
+
+/* ************************************************************************** */
+
+	rule
+		<k> print(V:Value); => . ... </k>
+		<output> . => ListItem(V) ... </output>				[transition]
 
 /* ************************************************************************** */
 

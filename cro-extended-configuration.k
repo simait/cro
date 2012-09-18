@@ -17,22 +17,29 @@
  * along with CRO-EXTENDED-K.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require "cro-core.k"
-require "cro-extended-syntax.k"
-require "cro-extended-semantic.k"
-require "cro-extended-config.k"
+module CRO-EXTENDED-CONFIG
 
-module CRO-EXTENDED
+	syntax K ::= "programLoaded" "(" K ")"
 
-	imports CRO-CORE-SYNTAX
-	imports CRO-CORE-PARSER
-	imports CRO-CORE-SEMANTIC
-	imports CRO-CORE-INIT
-	imports CRO-EXTENDED-CONFIG
-	imports CRO-EXTENDED-SYNTAX
-	imports CRO-EXTENDED-SEMANTIC
+	configuration
+		<T>
+			<messages>
+				<message multiplicity="*" color="yellow">
+					<k color="green"> programLoaded($PGM:K) </k>
+					<contexts color="magenta"> .List </contexts>
+				</message>
+			</messages>
 
-	rule
-		<k> programLoaded(P:K) => programParse(P) ~> programInit ~> programEval </k>
+			<classes color="purple">
+				.Map
+			</classes>
+
+			<store color="red"> .Map </store>
+			<nextLocation color="blue"> 0 </nextLocation>
+
+			<input stream="stdin"> $IN:List </input>
+			<output stream="stdout"> .List </output>
+
+		</T>
 
 endmodule
