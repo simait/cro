@@ -64,7 +64,10 @@ module CRO-CORE-SYNTAX
 	syntax Module ::= "module" Id Cmd
 
 	// Make things easier to write semantics for...
-	rule method I:Id (Is:Ids) {} => method I (Is) {return nothing;}		[structural]
+	rule	method I:Id (Is:Ids) {} => method I (Is) {return nothing;}	[structural]
+
+	// Make sure we don't have any empty { }
+	rule	{ } => { nothing; }						[structural]
 
 	// Ensure that we have sequential execution of Cmds.
 	rule	C0:Cmds C1:Cmds => C0 ~> C1					[structural]
