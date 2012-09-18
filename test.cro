@@ -2,12 +2,16 @@ module test {
 	class test(x) {
 		var blaergh := 2;
 		method snarf(v) {
-			v();
+			blaergh := v();
+			print(blaergh);
 			if (blaergh > 2) {
 				blaergh := 53;
 			} else {
 				blaergh := 42;
 			}
+		}
+		method echo(str) {
+			print(str);
 		}
 	}
 	class root() {
@@ -19,10 +23,15 @@ module test {
 			while (g < 10) {
 				g := g + 1;
 			}
+
+			return g;
 		}
 
 		method init() {
 			send t.snarf(done);
+			if (true) {
+				send t.echo("Hello World!\r\n");
+			}
 		}
 	}
 }
