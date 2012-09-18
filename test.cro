@@ -2,8 +2,11 @@ module test {
 	class test(x) {
 		var blaergh := 2;
 		method snarf(v) {
-			blaergh := 42;
 			v();
+			if (blaergh > 2) {
+				blaergh := 53;
+			}
+			blaergh := 42;
 		}
 	}
 	class root() {
