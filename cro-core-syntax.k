@@ -30,9 +30,8 @@ module CRO-CORE-SYNTAX
 		| Id
 		| Exp "." Id
 		| Exp "(" Exps ")"						[strict]
-		| "(" Exp ")"							[bracket]
 
-		syntax Exps ::= List{Exp, ","}					[strict]
+	syntax Exps ::= List{Exp, ","}						[strict]
 
 	syntax Cmd ::=
 		"{" "}"

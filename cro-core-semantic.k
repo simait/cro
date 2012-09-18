@@ -228,29 +228,6 @@ module CRO-CORE-SEMANTIC-MESSAGES
 
 endmodule
 
-
-/* ************************************************************************** */
-
-// 	rule	<k> - Iv => 0 -Int Iv ... </k>
-// 	rule	<k> Iv1 + Iv2 => Iv1 +Int Iv2 ... </k>
-// 	rule	<k> _-_(Iv1,Iv2) => _-Int_(Iv1,Iv2) ... </k>
-// 	rule	<k> Iv1 * Iv2 => Iv1 *Int Iv2 ... </k>
-// 	rule	<k> Iv1 / Iv2 => Iv1 /Int Iv2 ... </k>		when notBool(Iv2 =/=Int 0)
-// 	rule	<k> Iv1 % Iv2 => Iv1 %Int Iv2 ... </k>		when notBool(Iv2 =/=Int 0)
-//
-// 	rule	<k> Iv1 > Iv2 => Iv1 >Int Iv2 ... </k>
-// 	rule	<k> Iv1 < Iv2 => Iv1 <Int Iv2 ... </k>
-// 	rule	<k> Iv1 >= Iv2 => Iv1 >=Int Iv2 ... </k>
-// 	rule	<k> Iv1 <= Iv2 => Iv1 <=Int Iv2 ... </k>
-// 	rule	<k> Iv1 != Iv2 => Iv1 =/=Int Iv2 ... </k>
-// 	rule	<k> Iv1 == Iv2 => Iv1 ==Int Iv2 ... </k>
-//
-// 	rule	<k> B1 or B2 => B1 orBool B1 ... </k>
-// 	rule	<k> B1 and B2 => B1 andBool B2 ... </k>
-// 	rule	<k> not B => notBool B ... </k>
-//
-// 	rule	<k> Str1 + Str2 => Str1 +String Str2 ... </k>
-
 /* ************************************************************************** */
 
 module CRO-CORE-SEMANTIC
