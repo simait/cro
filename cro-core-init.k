@@ -29,12 +29,14 @@ module CRO-CORE-INIT
 
 	syntax ListItem ::= "(" Location "," Map "," K ")"
 
-	syntax Location ::= "location" "(" Int ")" | "locationVoid"
+	syntax Location ::= "location" "(" Int ")"
+
+	syntax LocationValue ::= "locationValue" "(" Int ")" | "locationValueVoid"
 
 	syntax Value ::=
 		Object
 		| Method
-		| Location
+		| LocationValue
 
 	syntax CellLabel ::= "interface" | "bindings" | "state" | "active"
 // 	syntax ObjectLabel ::= "interface" | "bindings" | "state" | "active"
@@ -52,7 +54,7 @@ module CRO-CORE-INIT
 
 	syntax K ::= "valueStore" "(" Value ")"					[strict]
 	rule
-		<k> valueStore( V:Value ) => location(L:Int) ... </k>
+		<k> valueStore( V:Value ) => locationValue(L:Int) ... </k>
 		<store> (. => L |-> V) Rho:Map </store>
 		<nextLocation> L => L +Int 1 </nextLocation>
 		when notBool(L in keys(Rho))
@@ -66,12 +68,12 @@ module CRO-CORE-INIT
 
 /* ************************************************************************** */
 
-	syntax K ::= "objectBindAdd" "(" Id "," Value ")"			[strict(2)]
+	syntax K ::= "objectBindAdd" "(" Id "," LocationValue ")"		[strict(2)]
 	syntax K ::= "objectBindAddAll" "(" Ids "," Values ")"			[strict(2)]
-	syntax K ::= "objectStateAdd" "(" Id "," Location ")"			[strict(2)]
-	syntax K ::= "objectInterfaceAdd" "(" Id "," Location ")"		[strict(2)]
+	syntax K ::= "objectStateAdd" "(" Id "," LocationValue ")"		[strict(2)]
+	syntax K ::= "objectInterfaceAdd" "(" Id "," LocationValue ")"		[strict(2)]
 	syntax K ::= "objectCreate" "(" Id "," Values ")"			[strict(2)]
-	syntax K ::= "objectPush" "(" Location ")"				[strict]
+	syntax K ::= "objectPush" "(" LocationValue ")"				[strict]
 	syntax K ::= "objectPop" "(" ")"
 
 /* ************************************************************************** */
@@ -81,8 +83,8 @@ module CRO-CORE-INIT
 /* ************************************************************************** */
 
 	rule
-		<k> contextsInit(O:Location) => . ... </k>
-		<contexts> . => (locationVoid, root |-> O, .K) </contexts>
+		<k> contextsInit(locationValue(L:Int)) => . ... </k>
+		<contexts> . => (locationValueVoid, root |-> location(L), .K) </contexts>
 
 /* ************************************************************************** */
 
@@ -104,7 +106,6 @@ module CRO-CORE-INIT
 						)
 					)
 				) ~>
-// 				objectStateAdd(active, valueStore(false)) ~>
 				objectBindAddAll(Is:Ids, Vs) ~>
 				Cs:Cmds ~>
 				objectPop()
@@ -119,23 +120,23 @@ module CRO-CORE-INIT
 /* ************************************************************************** */
 
 	rule	/* Push object onto context stack. */
-		<k> objectPush(O:Location) => . ... </k>
+		<k> objectPush(O:LocationValue) => . ... </k>
 		<contexts> . => ListItem(O) ... </contexts>
 
 	rule	/* Leave object from context stack. */
-		<k> objectPop() => O:Location ... </k>
+		<k> objectPop() => O:LocationValue ... </k>
 		<contexts> ListItem(O) => . ... </contexts>
 
 /* ************************************************************************** */
 
 	rule	/* Add identifier to the object interface. */
-		<k> objectInterfaceAdd(I:Id, L:Location) => . ... </k>
-		<contexts> ListItem(location(O:Int)) ... </contexts>
+		<k> objectInterfaceAdd(I:Id, locationValue(L:Int)) => . ... </k>
+		<contexts> ListItem(locationValue(O:Int)) ... </contexts>
 		<store>
 			...
 				O |-> objectClosure(
 					X
-					<interface> If:Map => If[L/I] </interface>
+					<interface> If:Map => If[location(L)/I] </interface>
 					Y
 				)
 			...
@@ -144,13 +145,13 @@ module CRO-CORE-INIT
 /* ************************************************************************** */
 
 	rule	/* Add a single binding. */
-		<k> objectBindAdd(I:Id, V:Value) => . ... </k>
-		<contexts> ListItem(location(O:Int)) ... </contexts>
+		<k> objectBindAdd(I:Id, locationValue(L:Int)) => . ... </k>
+		<contexts> ListItem(locationValue(O:Int)) ... </contexts>
 		<store>
 			...
 				O |-> objectClosure(
 					X
-					<bindings> B:Map => B[V/I] </bindings>
+					<bindings> B:Map => B[location(L)/I] </bindings>
 					Y
 				)
 			...
@@ -162,7 +163,7 @@ module CRO-CORE-INIT
 	rule	/* Bind one value and recurse over the tail. */
 		<k>
 			objectBindAddAll((I:Id,Is:Ids), (V:Value,Vs:Values)) =>
-				objectBindAdd(I, V) ~>
+				objectBindAdd(I, valueStore(V)) ~>
 				objectBindAddAll(Is, Vs)
 			...
 		</k>
@@ -170,13 +171,13 @@ module CRO-CORE-INIT
 /* ************************************************************************** */
 
 	rule	/* Add a state variable. */
-		<k> objectStateAdd(I:Id, L:Location) => . ... </k>
-		<contexts> ListItem(location(O:Int)) ... </contexts>
+		<k> objectStateAdd(I:Id, locationValue(L:Int)) => . ... </k>
+		<contexts> ListItem(locationValue(O:Int)) ... </contexts>
 		<store>
 			...
 				O |-> objectClosure(
 					X
-					<state> S:Map => S[L/I] </state>
+					<state> S:Map => S[location(L)/I] </state>
 					Y
 				)
 			...
@@ -199,7 +200,7 @@ module CRO-CORE-INIT
 				)
 			...
 		</k>
-		<contexts> ListItem(O:Location) ... </contexts>
+		<contexts> ListItem(O:LocationValue) ... </contexts>
 
 /* ************************************************************************** */
 

@@ -37,7 +37,7 @@ module CRO-CORE-SYNTAX
 		"{" "}"
 		| "{" Cmds "}"
 		| Exp ";"							[strict]
-		| Exp ":=" Exp ";"						[strict]
+		| Exp ":=" Exp ";"						[strict(2)]
 		| "send" Exp ";"
 		| "return" Exp ";"
 		| "halt" ";"

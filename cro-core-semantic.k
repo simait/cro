@@ -29,22 +29,25 @@ module CRO-CORE-SEMANTIC-CONTEXTS
 
 /* ************************************************************************** */
 
+	syntax K ::= "lookup" "(" Id ")"
+	rule
+		<k> lookup(I:Id) => lookup(Env:Map, I) ... </k>
+		<contexts> (_:LocationValue, Env, _:K) ... </contexts>
+
+/* ************************************************************************** */
+
 	syntax K ::= "lookup" "(" Map "," Id ")"
 	rule
-		<k> lookup(X I |-> V Y, I:Id) => V:Value ... </k>
+		<k> lookup(X I:Id |-> V:Value Y, I) => V ... </k>
+	rule
+		<k> lookup(X I:Id |-> L:Location Y, I) => L ... </k>
 
 /* ************************************************************************** */
 
+	syntax K ::= "contextEnter" "(" LocationValue "," K ")"
 	rule
-		<k> I:Id => lookup(Env:Map, I) ... </k>
-		<contexts> (_:Location, Env, _:K) ... </k>
-
-/* ************************************************************************** */
-
-	syntax K ::= "contextEnter" "(" Location "," K ")"
-	rule
-		<k> contextEnter(location(L:Int), K:K) => . ... </k>
-		<contexts> . => (location(L), If:Map[B:Map[S:Map]], K) ... </contexts>
+		<k> contextEnter(locationValue(L:Int), K:K) => . ... </k>
+		<contexts> . => (locationValue(L), If:Map[B:Map[S:Map]], K) ... </contexts>
 		<store>
 			...
 				L |-> objectClosure(
@@ -62,7 +65,7 @@ module CRO-CORE-SEMANTIC-CONTEXTS
 	syntax K ::= "contextLeave" "(" Value ")"
 	rule
 		<k> contextLeave(V:Value) ~> _:K => V ~> K:K </k>
-		<contexts> (_:Location,_:Map, K) => . ... </contexts>
+		<contexts> (_:LocationValue, _:Map, K) => . ... </contexts>
 
 
 /* ************************************************************************** */
@@ -70,14 +73,14 @@ module CRO-CORE-SEMANTIC-CONTEXTS
 	syntax K ::= "contextBindAdd" "(" Id "," Value ")"
 	rule
 		<k> contextBindAdd(I:Id, V:Value) => . ... </k>
-		<contexts> (_:Location, Env:Map => Env[V/I], _:K) ... </contexts>
+		<contexts> (_:LocationValue, Env:Map => Env[V/I], _:K) ... </contexts>
 
 /* ************************************************************************** */
 
 	syntax K ::= "this"
 	rule
-		<k> this => L:Location ... </k>
-		<contexts> (L, _:Map, _:K) ... </contexts>
+		<k> this => O:LocationValue ... </k>
+		<contexts> (O, _:Map, _:K) ... </contexts>
 
 /* ************************************************************************** */
 
@@ -93,9 +96,9 @@ module CRO-CORE-SEMANTIC-OBJECTS
 
 /* ************************************************************************** */
 
-	syntax K ::= "objectActivate" "(" Location ")"				[strict]
+	syntax K ::= "objectActivate" "(" LocationValue ")"				[strict]
 	rule
-		<k> objectActivate(location(L:Int)) => . ... </k>
+		<k> objectActivate(locationValue(L:Int)) => . ... </k>
 		<store>
 			...
 				L |-> objectClosure(
@@ -108,9 +111,9 @@ module CRO-CORE-SEMANTIC-OBJECTS
 
 /* ************************************************************************** */
 
-	syntax K ::= "objectDeactivate" "(" Location ")"			[strict]
+	syntax K ::= "objectDeactivate" "(" LocationValue ")"			[strict]
 	rule
-		<k> objectDeactivate(location(L:Int)) => . ... </k>
+		<k> objectDeactivate(locationValue(L:Int)) => . ... </k>
 		<store>
 			...
 				L |-> objectClosure(
@@ -124,15 +127,27 @@ module CRO-CORE-SEMANTIC-OBJECTS
 /* ************************************************************************** */
 
 	context	'_._(HOLE,, _:Id)
-	rule
-		<k> '_._(location(L:Int),, I:Id) => '_._(valueLoad(L),, I) ... </k>
+// 	rule
+// 		<k> '_._(location(L:Int),, I:Id) => '_._(valueLoad(L),, I) ... </k>
 	rule
 		<k> '_._(objectClosure(X <interface> If:Map </interface> Y),, I:Id) => lookup(If, I) ... </k>
 
 /* ************************************************************************** */
 
+	syntax ObjectState ::= "objectState" "(" Int ")"
+	syntax Value ::= ObjectState
+
+/* ************************************************************************** */
+
 	rule
-		<k> location(L:Int) := V:Value ; => . ... </k>
+		<k> objectState(I:Id) => objectState(L:Int) ... </k>
+		<contexts> (_:LocationValue, X I|-> location(L) Y, _:K) ... </contexts>
+
+/* ************************************************************************** */
+
+	context (HOLE => objectState(HOLE)) := _ ;
+	rule
+		<k> objectState(L:Int) := V:Value ; => . ... </k>
 		<store> Rho:Map => Rho[V/L] </store>
 
 /* ************************************************************************** */
@@ -144,7 +159,6 @@ endmodule
 module CRO-CORE-SEMANTIC-MESSAGES
 
 	imports CRO-CORE-SYNTAX
-	imports CRO-CORE-INIT
 	imports CRO-CORE-SEMANTIC-CONTEXTS
 	imports CRO-CORE-SEMANTIC-OBJECTS
 
@@ -171,11 +185,11 @@ module CRO-CORE-SEMANTIC-MESSAGES
 
 /* ************************************************************************** */
 
-	rule
-		<k> '_`(_`)(location(L:Int),, Vs:Values) => '_`(_`)(valueLoad(L),, Vs) ... </k>
+// 	rule
+// 		<k> '_`(_`)(location(L:Int),, Vs:Values) => '_`(_`)(valueLoad(L),, Vs) ... </k>
 	rule
 		<k> '_`(_`)(methodClosure(
-				<object> L:Location </object>
+				<object> L:LocationValue </object>
 				<params> Is:Ids </params>
 				<commands> Cs:Cmds </commands>
 			),, Vs:Values) ~> Return:K =>
@@ -202,8 +216,8 @@ module CRO-CORE-SEMANTIC-MESSAGES
 	syntax K ::= "messageClosureCreate" "(" Exp ")"
 	context messageClosureCreate('_`(_`)(HOLE,, _))
 	context messageClosureCreate('_`(_`)(_,, HOLE))
-	rule
-		<k> messageClosureCreate('_`(_`)(location(L:Int),, Vs:Values) => '_`(_`)(valueLoad(L),, Vs)) ... </k>
+// 	rule
+// 		<k> messageClosureCreate('_`(_`)(location(L:Int),, Vs:Values) => '_`(_`)(valueLoad(L),, Vs)) ... </k>
 
 	rule
 		<k> messageClosureCreate('_`(_`)(M:Method,, Vs:Values)) => messageClosure('_`(_`)(M,, Vs)) ... </k>
@@ -238,6 +252,17 @@ module CRO-CORE-SEMANTIC
 /* ************************************************************************** */
 
 	syntax K ::= "programEval" | "programDone"// | "halt"
+
+/* ************************************************************************** */
+
+	rule
+		<k> I:Id => lookup(I) ... </k>
+
+/* ************************************************************************** */
+
+	rule
+		<k> location(L:Int) => V:Value ... </k>
+		<store> ... L |-> V ... </store>
 
 /* ************************************************************************** */
 
