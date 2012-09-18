@@ -4,7 +4,7 @@ module test {
 
 		switch = new switch();
 
-		method init():void {
+		method init() {
 			send switch.enable();
 			switch.disable();
 			switch.enable();
@@ -14,20 +14,20 @@ module test {
 	}
 
 	class switch() {
-		var enabled:bool := false;
+		var enabled := false;
 
-		method enable():void {
+		method enable() {
 			enabled := true;
 		}
 
-		method disable():void {
+		method disable() {
 			if (not enabled) {
 				send notification("Double disable!\r\n");
 			}
 			enabled := false;
 		}
 
-		method notification(msg:string):void {
+		method notification(msg) {
 			print(msg);
 		}
 	}
