@@ -21,6 +21,7 @@ require "cro-extended-syntax.k"
 
 module CRO-EXTENDED-SEMANTIC
 
+// 	imports CRO-CORE-INIT
 	imports CRO-EXTENDED-SYNTAX
 
 /* ************************************************************************** */
@@ -53,13 +54,17 @@ module CRO-EXTENDED-SEMANTIC
 
 /* ************************************************************************** */
 
-	rule	if (E:Exp) T:Cmd => if (E) T else {}
+	rule	if (E:Exp) T:Cmd => if (E) T else {}				[structural]
 	rule	<k> if (true) C:Cmd else _:Cmd => C ... </k>
 	rule	<k> if (false) _:Cmd else C:Cmd => C ... </k>
 
 /* ************************************************************************** */
 
-	rule	<k> while (E:Exp) {Cs:Cmds} => if (E) {Cs while (E) {Cs}} </k>
+	rule	<k> while (E:Exp) {Cs:Cmds} => if (E) {Cs while (E) {Cs}} ... </k>
+
+/* ************************************************************************** */
+
+	rule	<k> { Cs:Cmds } => Cs ... </k>					[structural]
 
 /* ************************************************************************** */
 

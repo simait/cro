@@ -27,5 +27,4 @@ module CRO-EXTENDED
 	imports CRO-EXTENDED-SYNTAX
 	imports CRO-EXTENDED-SEMANTIC
 
-
 endmodule
