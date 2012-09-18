@@ -17,11 +17,7 @@
  * along with CRO-CORE-K.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require "cro-core-syntax.k"
-
-module CRO-CORE-CONFIG
-
-	imports CRO-CORE-SYNTAX
+module CRO-CORE-CONFIGURATION
 
 	syntax K ::= "programLoaded" "(" K ")"
 
@@ -40,12 +36,6 @@ module CRO-CORE-CONFIG
 
 			<store color="red"> .Map </store>
 			<nextLocation color="blue"> 0 </nextLocation>
-
-// 			<input stream="stdin"> $IN:List </input>
-// 			<output stream="stdout"> .List </output>
-// 			<br/>
-
-
 		</T>
 
 endmodule

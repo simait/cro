@@ -65,7 +65,7 @@ module CRO-CORE-SEMANTIC-CONTEXTS
 	syntax K ::= "contextLeave" "(" Value ")"
 	rule
 		<k> contextLeave(V:Value) ~> _:K => V ~> K:K </k>
-		<contexts> (_:LocationValue, _:Map, K) => . ... </contexts>
+		<contexts> (_:LocationValue, _:Map, K) => . ... </contexts>	[transition]
 
 
 /* ************************************************************************** */
@@ -96,7 +96,7 @@ module CRO-CORE-SEMANTIC-OBJECTS
 
 /* ************************************************************************** */
 
-	syntax K ::= "objectActivate" "(" LocationValue ")"				[strict]
+	syntax K ::= "objectActivate" "(" LocationValue ")"			[strict]
 	rule
 		<k> objectActivate(locationValue(L:Int)) => . ... </k>
 		<store>
@@ -107,7 +107,7 @@ module CRO-CORE-SEMANTIC-OBJECTS
 					Y
 				)
 			...
-		</store>
+		</store>							[transition]
 
 /* ************************************************************************** */
 
@@ -122,13 +122,11 @@ module CRO-CORE-SEMANTIC-OBJECTS
 					Y
 				)
 			...
-		</store>
+		</store>							[transition]
 
 /* ************************************************************************** */
 
 	context	'_._(HOLE,, _:Id)
-// 	rule
-// 		<k> '_._(location(L:Int),, I:Id) => '_._(valueLoad(L),, I) ... </k>
 	rule
 		<k> '_._(objectClosure(X <interface> If:Map </interface> Y),, I:Id) => lookup(If, I) ... </k>
 
@@ -141,14 +139,13 @@ module CRO-CORE-SEMANTIC-OBJECTS
 
 	rule
 		<k> objectState(I:Id) => objectState(L:Int) ... </k>
-		<contexts> (_:LocationValue, X I|-> location(L) Y, _:K) ... </contexts>
+		<contexts> (_:LocationValue, X I |-> location(L) Y, _:K) ... </contexts>
 
 /* ************************************************************************** */
 
 	context (HOLE => objectState(HOLE)) := _ ;
 	rule
-		<k> objectState(L:Int) := V:Value ; => . ... </k>
-		<store> Rho:Map => Rho[V/L] </store>
+		<k> objectState(L:Int) := V:Value ; => valueStore(L, V) ... </k>
 
 /* ************************************************************************** */
 
@@ -164,11 +161,7 @@ module CRO-CORE-SEMANTIC-MESSAGES
 
 /* ************************************************************************** */
 
-	syntax MessageClosure ::= "messageClosure" "(" Exp ")"
-
 	syntax K ::= "messageDone"
-
-	syntax Value ::= MessageClosure
 
 /* ************************************************************************** */
 
@@ -185,8 +178,6 @@ module CRO-CORE-SEMANTIC-MESSAGES
 
 /* ************************************************************************** */
 
-// 	rule
-// 		<k> '_`(_`)(location(L:Int),, Vs:Values) => '_`(_`)(valueLoad(L),, Vs) ... </k>
 	rule
 		<k> '_`(_`)(methodClosure(
 				<object> L:LocationValue </object>
@@ -213,14 +204,20 @@ module CRO-CORE-SEMANTIC-MESSAGES
 
 /* ************************************************************************** */
 
+	syntax MessageClosure ::= "messageClosure" "(" Exp ")"
+	syntax Value ::= MessageClosure
+
+/* ************************************************************************** */
+
 	syntax K ::= "messageClosureCreate" "(" Exp ")"
+
 	context messageClosureCreate('_`(_`)(HOLE,, _))
 	context messageClosureCreate('_`(_`)(_,, HOLE))
-// 	rule
-// 		<k> messageClosureCreate('_`(_`)(location(L:Int),, Vs:Values) => '_`(_`)(valueLoad(L),, Vs)) ... </k>
-
 	rule
 		<k> messageClosureCreate('_`(_`)(M:Method,, Vs:Values)) => messageClosure('_`(_`)(M,, Vs)) ... </k>
+
+/* ************************************************************************** */
+
 	context send (HOLE => messageClosureCreate(HOLE));
 	rule
 			<message>
@@ -231,7 +228,7 @@ module CRO-CORE-SEMANTIC-MESSAGES
 					<k> '_`(_`)(M,, Vs); ~> messageDone </k>
 					<contexts> .List </contexts>
 				</message>
-			)
+			)							[transition]
 
 /* ************************************************************************** */
 
@@ -251,7 +248,7 @@ module CRO-CORE-SEMANTIC
 
 /* ************************************************************************** */
 
-	syntax K ::= "programEval" | "programDone"// | "halt"
+	syntax K ::= "programEval" | "programDone"
 
 /* ************************************************************************** */
 

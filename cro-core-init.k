@@ -18,6 +18,7 @@
  */
 
 require "cro-core-syntax.k"
+require "cro-core-parser.k"
 
 module CRO-CORE-INIT
 
@@ -52,12 +53,19 @@ module CRO-CORE-INIT
 
 /* ************************************************************************** */
 
-	syntax K ::= "valueStore" "(" Value ")"					[strict]
+	syntax K ::= "valueAlloc" "(" Value ")"					[strict]
 	rule
-		<k> valueStore( V:Value ) => locationValue(L:Int) ... </k>
+		<k> valueAlloc( V:Value ) => locationValue(L:Int) ... </k>
 		<store> (. => L |-> V) Rho:Map </store>
 		<nextLocation> L => L +Int 1 </nextLocation>
 		when notBool(L in keys(Rho))
+
+/* ************************************************************************** */
+
+	syntax K ::= "valueStore" "(" Int "," K ")"
+	rule
+		<k> valueStore(L:Int, V:K) => . ... </k>
+		<store> ... L |-> (_ => V) ... </store>				[transition]
 
 /* ************************************************************************** */
 
@@ -97,7 +105,7 @@ module CRO-CORE-INIT
 		<k>
 			objectCreate(I:Id, Vs:Values) =>
 				objectPush(
-					valueStore(
+					valueAlloc(
 						objectClosure(
 							<interface> .Map </interface>
 							<bindings> .Map </bindings>
@@ -163,7 +171,7 @@ module CRO-CORE-INIT
 	rule	/* Bind one value and recurse over the tail. */
 		<k>
 			objectBindAddAll((I:Id,Is:Ids), (V:Value,Vs:Values)) =>
-				objectBindAdd(I, valueStore(V)) ~>
+				objectBindAdd(I, valueAlloc(V)) ~>
 				objectBindAddAll(Is, Vs)
 			...
 		</k>
@@ -190,7 +198,7 @@ module CRO-CORE-INIT
 		<k>
 			method I:Id (Is:Ids) {Cs:Cmds} =>
 				objectInterfaceAdd(I,
-					valueStore(
+					valueAlloc(
 						methodClosure(
 							<object> O </object>
 							<params> Is </params>
@@ -210,7 +218,7 @@ module CRO-CORE-INIT
 /* ************************************************************************** */
 
 	rule	/* Variable declaration. */
-		<k> var I:Id := V:Value; => objectStateAdd(I, valueStore(V)) ... </k>
+		<k> var I:Id := V:Value; => objectStateAdd(I, valueAlloc(V)) ... </k>
 
 /* ************************************************************************** */
 

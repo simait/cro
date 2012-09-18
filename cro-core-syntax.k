@@ -39,7 +39,7 @@ module CRO-CORE-SYNTAX
 		| Exp ";"							[strict]
 		| Exp ":=" Exp ";"						[strict(2)]
 		| "send" Exp ";"
-		| "return" Exp ";"
+		| "return" Exp ";"						[strict]
 		| "halt" ";"
 
 	syntax Cmds ::=
