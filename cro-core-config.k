@@ -17,7 +17,7 @@
  * along with CRO-CORE-K.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-module CRO-CORE-CONFIGURATION
+module CRO-CORE-CONFIG
 
 	syntax K ::= "programLoaded" "(" K ")"
 
