@@ -4,7 +4,7 @@ module test4 {
 		inv0 = new invoker();
 		inv1 = new invoker();
 
-		method init():void {
+		method init() {
 			inv0.setCallback(inv1.update);
 			inv1.setCallback(inv0.update);
 
@@ -14,16 +14,16 @@ module test4 {
 	}
 
 	class invoker() {
-		var callback:int := 0;
+		var callback := 0;
 
-		method setCallback(cb:int):void {
+		method setCallback(cb) {
 			callback := cb;
 		}
 
-		method update():void {
+		method update() {
 		}
 
-		method invoke():void {
+		method invoke() {
 			callback();
 		}
 	}
