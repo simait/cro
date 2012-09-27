@@ -22,8 +22,8 @@ module CRO-CORE-CONFIG
 	syntax K ::= "programLoaded" "(" K ")"
 
 	configuration
-		<T>
-			<messages>
+		<T color="brown">
+			<messages color="orange">
 				<message multiplicity="*" color="yellow">
 					<k color="green"> programLoaded($PGM:K) </k>
 					<contexts color="magenta"> .List </contexts>
@@ -34,8 +34,21 @@ module CRO-CORE-CONFIG
 				.Map
 			</classes>
 
-			<store color="red"> .Map </store>
-			<nextLocation color="blue"> 0 </nextLocation>
+			<class>
+				<interface> .Map </interface>
+				<bindings> .Map </bindings>
+				<state> .Map </state>
+				<active> false </active>
+			</class>
+
+			<method>
+				<object> O:Value </object>
+				<params> Is:Ids </params>
+				<commands> Cs:Cmds </commands>
+			</method>
+
+			<store color="blue"> .Map </store>
+			<nextLocation color="red"> 0 </nextLocation>
 		</T>
 
 endmodule
