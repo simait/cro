@@ -43,9 +43,9 @@ module CRO-EXTENDED-SEMANTIC
 
 /* ************************************************************************** */
 
-	rule	<k> B0:Bool or B1:Bool		=> B1 orBool B1 ... </k>
-	rule	<k> B0:Bool and B1:Bool		=> B0 andBool B1 ... </k>
-	rule	<k> not B0:Bool			=> notBool B0 ... </k>
+	rule	<k> B0:Bool || B1:Bool		=> B1 orBool B1 ... </k>
+	rule	<k> B0:Bool && B1:Bool		=> B0 andBool B1 ... </k>
+	rule	<k> ! B0:Bool			=> notBool B0 ... </k>
 
 /* ************************************************************************** */
 

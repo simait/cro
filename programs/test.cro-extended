@@ -21,11 +21,11 @@ module test {
 		}
 
 		method disable() {
-			send (notification("Double disable!\r\n"));
+			send asdf("Double disable!\r\n");
 			enabled := false;
 		}
 
-		method notification(msg) {
+		method asdf(msg) {
 			print(msg);
 		}
 	}

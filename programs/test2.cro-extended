@@ -3,7 +3,11 @@ module test {
 	class root() {
 		test = new test(0);
 		test2 = new test(1);
+
 		var test3 := 42;
+		var notWorking := true;
+		var str := "Hello (again) from another message!\n";
+
 		method init() {
 			print("Hello World!\n");
 			send start();
@@ -12,13 +16,11 @@ module test {
 			test3 := test.test(0, 100, 100);
 			test.test2(true);
 			test2.test2(false);
-			var notWorkingool := true;
 			notWorking := false;
 			test2.test2(notWorking);
 			test.test3();
 			test2.test3();
 			send test2.test4("Hello from another message!\n");
-			var strtring := "Hello (again) from another message!\n";
 			send test2.test4(str);
 		}
 	}

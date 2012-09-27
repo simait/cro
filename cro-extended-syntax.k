@@ -40,10 +40,10 @@ module CRO-EXTENDED-SYNTAX
 		| Exp ">=" Exp							[strict, non-assoc]
 		| Exp "==" Exp							[strict, non-assoc]
 		| Exp "!=" Exp							[strict, non-assoc]
-		> "not" Exp							[strict]
+		> "!" Exp							[strict]
 		> left:
-			Exp "and" Exp						[strict, left]
-		| Exp "or" Exp							[strict, left]
+			Exp "&&" Exp						[strict, left]
+		| Exp "||" Exp							[strict, left]
 
 	syntax Cmd ::=
 		"if" "(" Exp ")" Cmd						[strict(1)]
