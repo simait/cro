@@ -47,9 +47,9 @@ module CRO-CORE-SYNTAX
 		| Cmd
 		| Cmds Cmds							[right]
 
-	syntax Decl ::= "method" Id "(" Ids ")" Cmd
-	syntax Decl ::= "var" Exp ":=" Value ";"
 	syntax Decl ::= Id "=" "new" Exp "(" Exps ")" ";"
+	syntax Decl ::= "var" Exp ":=" Value ";"
+	syntax Decl ::= "method" Id "(" Ids ")" Cmd
 
 	syntax Decl ::= "class" Id "(" Exps ")" Cmd
 

@@ -35,7 +35,7 @@ module CRO-CORE-PARSER
 	rule
 		<k> parseCleanup => . ... </k>
 		<classes>
-			Clss:Bag => .
+			Clss:Map => .
 		</classes>
 
 	rule

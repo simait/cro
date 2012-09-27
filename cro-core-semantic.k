@@ -38,9 +38,9 @@ module CRO-CORE-SEMANTIC-CONTEXTS
 
 	syntax K ::= "lookup" "(" Map "," Id ")"
 	rule
-		<k> lookup(X I:Id |-> V:Value Y, I) => V ... </k>
+		<k> lookup(X:Map I:Id |-> V:Value Y:Map, I) => V ... </k>
 	rule
-		<k> lookup(X I:Id |-> L:Location Y, I) => L ... </k>
+		<k> lookup(X:Map I:Id |-> L:Location Y:Map, I) => L ... </k>
 
 /* ************************************************************************** */
 
@@ -139,7 +139,7 @@ module CRO-CORE-SEMANTIC-OBJECTS
 
 	rule
 		<k> objectState(I:Id) => objectState(L:Int) ... </k>
-		<contexts> (_:LocationValue, X I |-> location(L) Y, _:K) ... </contexts>
+		<contexts> (_:LocationValue, X:Map I |-> location(L) Y:Map, _:K) ... </contexts>
 
 /* ************************************************************************** */
 

@@ -28,7 +28,7 @@ module CRO-CORE-INIT
 	syntax Object ::= "objectClosure" "(" Bag ")" //Map "," Map "," Map ")" | "objectNone"
 	syntax Method ::= "methodClosure" "(" Bag ")" /* "," Ids "," Cmds ")"*/
 
-	syntax ListItem ::= "(" Location "," Map "," K ")"
+	syntax ListItem ::= "(" Value "," Map "," K ")"
 
 	syntax Location ::= "location" "(" Int ")"
 
@@ -86,7 +86,7 @@ module CRO-CORE-INIT
 
 /* ************************************************************************** */
 
-	syntax K ::= "contextsInit" "(" Int ")"					[strict]
+	syntax K ::= "contextsInit" "(" Value ")"				[strict]
 
 /* ************************************************************************** */
 
