@@ -1,8 +1,11 @@
 .k/
 cro-compiled.maude
-cro.pdf
+cro-core.pdf
 programCompile.maude
 kompile_xml*
 texput.log
 cro-output-*
 cro-solution-*
+.*.swp
+cro-extended.pdf
+cro-extended-compiled.maude
