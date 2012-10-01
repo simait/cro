@@ -22,18 +22,7 @@ module CRO-CORE-CONFIG
 	syntax K ::= "programLoaded" "(" K ")"
 
 	configuration
-		<T color="brown">
-			<messages color="orange">
-				<message multiplicity="*" color="yellow">
-					<k color="green"> programLoaded($PGM:K) </k>
-					<contexts color="magenta"> .List </contexts>
-				</message>
-			</messages>
-
-			<classes color="purple">
-				.Map
-			</classes>
-
+		<runtime>
 			<class>
 				<interface> .Map </interface>
 				<bindings> .Map </bindings>
@@ -46,6 +35,20 @@ module CRO-CORE-CONFIG
 				<params> Is:Ids </params>
 				<commands> Cs:Cmds </commands>
 			</method>
+		</runtime>
+
+	configuration
+		<T color="brown">
+			<messages color="orange">
+				<message multiplicity="*" color="yellow">
+					<k color="green"> programLoaded($PGM:K) </k>
+					<contexts color="magenta"> .List </contexts>
+				</message>
+			</messages>
+
+			<classes color="purple">
+				.Map
+			</classes>
 
 			<store color="blue"> .Map </store>
 			<nextLocation color="red"> 0 </nextLocation>
