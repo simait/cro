@@ -17,9 +17,10 @@
  * along with CRO-EXTENDED-K.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-module CRO-EXTENDED-CONFIG
+require "cro-core-config.k"
 
-	syntax K ::= "programLoaded" "(" K ")"
+module CRO-EXTENDED-CONFIG
+	imports CRO-CORE-CONFIG
 
 	configuration
 		<T>

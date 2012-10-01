@@ -24,15 +24,9 @@ require "cro-extended-config.k"
 
 module CRO-EXTENDED
 
-	imports CRO-CORE-SYNTAX
-	imports CRO-CORE-PARSER
-	imports CRO-CORE-SEMANTIC
-	imports CRO-CORE-INIT
+	imports CRO-CORE
 	imports CRO-EXTENDED-CONFIG
 	imports CRO-EXTENDED-SYNTAX
 	imports CRO-EXTENDED-SEMANTIC
-
-	rule
-		<k> programLoaded(P:K) => programParse(P) ~> programInit ~> programEval </k>	[transition]
 
 endmodule
