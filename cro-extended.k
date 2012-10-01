@@ -33,6 +33,6 @@ module CRO-EXTENDED
 	imports CRO-EXTENDED-SEMANTIC
 
 	rule
-		<k> programLoaded(P:K) => programParse(P) ~> programInit ~> programEval </k>
+		<k> programLoaded(P:K) => programParse(P) ~> programInit ~> programEval </k>	[transition]
 
 endmodule
