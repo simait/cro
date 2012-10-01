@@ -65,7 +65,7 @@ module CRO-EXTENDED-SEMANTIC
 
 	rule
 		<k> print(V:Value); => . ... </k>
-		<output> . => ListItem(V) ... </output>				[transition]
+		<output> ... . => ListItem(V) </output>				[transition]
 
 /* ************************************************************************** */
 
