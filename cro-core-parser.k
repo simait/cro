@@ -23,7 +23,7 @@ module CRO-CORE-PARSER
 
 	imports CRO-CORE-SYNTAX
 
-	syntax K ::= "programParse" "(" K ")" | "parseCleanup"
+	syntax K ::= "programParse" "(" K ")"
 
 	syntax K ::= "class" "(" Ids "," Cmds ")"
 
@@ -31,12 +31,6 @@ module CRO-CORE-PARSER
 
 	rule
 		<k> programParse(P:K) => P ... </k>
-
-	rule
-		<k> parseCleanup => . ... </k>
-		<classes>
-			Clss:Map => .
-		</classes>
 
 	rule
 		<k> module I:Id {Cs:Cmds} => Cs ... </k>
