@@ -19,37 +19,43 @@
 
 require "cro-extended-syntax.k"
 
-module CRO-EXTENDED-SEMANTIC
+module CRO-EXTENDED-SEMATIC-EXPR
 
 	imports CRO-EXTENDED-SYNTAX
 
 /* ************************************************************************** */
 
-	rule	<k> - I0:Int			=> 0 -Int I0 ... </k>
-	rule	<k> I0:Int + I1:Int		=> I0 +Int I1 ... </k>
-	rule	<k> I0:Int - I1:Int		=> I0 -Int I1 ... </k>
-	rule	<k> I0:Int * I1:Int		=> I0 *Int I1 ... </k>
-	rule	<k> I0:Int / I1:Int		=> I0 /Int I1 ... </k>		when notBool(I1 =/=Int 0)
-	rule	<k> I0:Int % I1:Int		=> I0 %Int I1 ... </k>		when notBool(I1 =/=Int 0)
+	rule	- I0:Int		=> 0 -Int I0
+	rule	I0:Int + I1:Int		=> I0 +Int I1
+	rule	I0:Int - I1:Int		=> I0 -Int I1
+	rule	I0:Int * I1:Int		=> I0 *Int I1
+	rule	I0:Int / I1:Int		=> I0 /Int I1				when notBool(I1 =/=Int 0)
+	rule	I0:Int % I1:Int		=> I0 %Int I1				when notBool(I1 =/=Int 0)
 
 /* ************************************************************************** */
 
-	rule	<k> I0:Int > I1:Int		=> I0 >Int I1 ... </k>
-	rule	<k> I0:Int < I1:Int		=> I0 <Int I1 ... </k>
-	rule	<k> I0:Int >= I1:Int		=> I0 >=Int I1 ... </k>
-	rule	<k> I0:Int <= I1:Int		=> I0 <=Int I1 ... </k>
-	rule	<k> I0:Int != I1:Int		=> I0 =/=Int I1 ... </k>
-	rule	<k> I0:Int == I1:Int		=> I0 ==Int I1 ... </k>
+	rule	I0:Int > I1:Int		=> I0 >Int I1
+	rule	I0:Int < I1:Int		=> I0 <Int I1
+	rule	I0:Int >= I1:Int	=> I0 >=Int I1
+	rule	I0:Int <= I1:Int	=> I0 <=Int I1
+	rule	I0:Int != I1:Int	=> I0 =/=Int I1
+	rule	I0:Int == I1:Int	=> I0 ==Int I1
 
 /* ************************************************************************** */
 
-	rule	<k> B0:Bool || B1:Bool		=> B1 orBool B1 ... </k>
-	rule	<k> B0:Bool && B1:Bool		=> B0 andBool B1 ... </k>
-	rule	<k> ! B0:Bool			=> notBool B0 ... </k>
+	rule	B0:Bool || B1:Bool	=> B1 orBool B1
+	rule	B0:Bool && B1:Bool	=> B0 andBool B1
+	rule	! B0:Bool		=> notBool B0
 
 /* ************************************************************************** */
 
-	rule	<k> S0:String + S1:String	=> S0 +String S1 ... </k>
+	rule	S0:String + S1:String	=> S0 +String S1
+
+endmodule
+
+module CRO-EXTENDED-SEMANTIC-CMD
+
+	imports CRO-EXTENDED-SYNTAX
 
 /* ************************************************************************** */
 
@@ -72,5 +78,14 @@ module CRO-EXTENDED-SEMANTIC
 	rule	<k> { Cs:Cmds } => Cs ... </k>					[structural]
 
 /* ************************************************************************** */
+
+
+endmodule
+
+module CRO-EXTENDED-SEMANTIC
+
+	imports CRO-EXTENDED-SYNTAX
+	imports CRO-EXTENDED-SEMATIC-EXPR
+	imports CRO-EXTENDED-SEMANTIC-CMD
 
 endmodule
