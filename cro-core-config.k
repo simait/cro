@@ -17,7 +17,13 @@
  * along with CRO-CORE-K.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+require "cro-core-syntax.k"
+require "cro-core-init.k"
+
 module CRO-CORE-CONFIG
+
+	imports CRO-CORE-SYNTAX
+	imports CRO-CORE-INIT
 
 	syntax K ::= "programLoaded" "(" K ")"
 
@@ -31,9 +37,9 @@ module CRO-CORE-CONFIG
 			</class>
 
 			<method>
-				<object> O:Value </object>
-				<params> Is:Ids </params>
-				<commands> Cs:Cmds </commands>
+				<object> locationValueVoid </object>
+				<params> .Ids </params>
+				<commands> { } </commands>
 			</method>
 		</runtime>
 
