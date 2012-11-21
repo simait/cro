@@ -1,6 +1,8 @@
 TARGET	:= cro-extended
 
-all: Makefile $(TARGET)-compiled.maude
+.PHONY: all
+
+all: Makefile *.k $(TARGET)-compiled.maude
 
 pdf: $(TARGET).pdf
 

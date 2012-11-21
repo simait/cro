@@ -47,7 +47,7 @@ module CRO-CORE-CONFIG
 		<T color="brown">
 			<messages color="orange">
 				<message multiplicity="*" color="yellow">
-					<k color="green"> programLoaded($PGM:K) </k>
+					<k color="green"> programLoaded($PGM:Module) </k>
 					<contexts color="magenta"> .List </contexts>
 				</message>
 			</messages>

@@ -39,11 +39,11 @@ module CRO-CORE-INIT
 		| Method
 		| LocationValue
 
-	syntax CellLabel ::= "interface" | "bindings" | "state" | "active"
+//	syntax CellLabel ::= "interface" | "bindings" | "state" | "active"
 // 	syntax ObjectLabel ::= "interface" | "bindings" | "state" | "active"
 // 	syntax CellLabel ::= ObjectLabels
 
-	syntax CellLabel ::= "object" | "params" | "commands"
+//	syntax CellLabel ::= "object" | "params" | "commands"
 // 	syntax MethodLabel ::= "parameters" | "commands"
 // 	syntax CellLabel ::= MethodLabel
 
