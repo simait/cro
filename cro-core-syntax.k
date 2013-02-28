@@ -22,7 +22,7 @@ module CRO-CORE-SYNTAX
 	// "root" and "init" are a part of all programs (for now...)
 	syntax Id ::= "root" | "init"
 
-	syntax Ids ::= List{Id, ","}						[strict]
+	syntax Ids ::= List{Id, ","}
 
 	// Expressions, still needs work to get precedence "right".
 	syntax Exp ::=
@@ -36,6 +36,7 @@ module CRO-CORE-SYNTAX
 	syntax Cmd ::=
 		"{" "}"
 		| "{" Cmds "}"
+		| Decl
 		| Exp ";"							[strict]
 		| Exp ":=" Exp ";"						[strict(2)]
 		| "send" Exp ";"
@@ -43,8 +44,7 @@ module CRO-CORE-SYNTAX
 		| "halt" ";"
 
 	syntax Cmds ::=
-		Decl
-		| Cmd
+		Cmd
 		| Cmds Cmds							[right]
 
 	syntax Decl ::= Id "=" "new" Exp "(" Exps ")" ";"

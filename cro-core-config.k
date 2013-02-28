@@ -28,22 +28,6 @@ module CRO-CORE-CONFIG
 	syntax K ::= "programLoaded" "(" K ")"
 
 	configuration
-		<runtime>
-			<class>
-				<interface> .Map </interface>
-				<bindings> .Map </bindings>
-				<state> .Map </state>
-				<active> false </active>
-			</class>
-
-			<method>
-				<object> locationValueVoid </object>
-				<params> .Ids </params>
-				<commands> { } </commands>
-			</method>
-		</runtime>
-
-	configuration
 		<T color="brown">
 			<messages color="orange">
 				<message multiplicity="*" color="yellow">
@@ -52,10 +36,25 @@ module CRO-CORE-CONFIG
 				</message>
 			</messages>
 
+			<runtime>
+				<class>
+					<interface> .Map </interface>
+					<bindings> .Map </bindings>
+					<state> .Map </state>
+					<active> false </active>
+				</class>
+
+				<method>
+					<object> locationValueVoid </object>
+					<params> .Ids </params>
+					<commands> { } </commands>
+				</method>
+			</runtime>
+
 			<classes color="purple">
 				.Map
 			</classes>
-
+			<br/>
 			<store color="blue"> .Map </store>
 			<nextLocation color="red"> 0 </nextLocation>
 		</T>

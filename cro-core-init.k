@@ -49,8 +49,6 @@ module CRO-CORE-INIT
 
 	syntax K ::= "programInit"
 
-	syntax KResult ::= Value
-
 /* ************************************************************************** */
 
 	syntax K ::= "valueAlloc" "(" Value ")"					[strict]

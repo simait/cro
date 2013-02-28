@@ -31,16 +31,21 @@ module CRO-CORE-SEMANTIC-CONTEXTS
 
 	syntax K ::= "lookup" "(" Id ")"
 	rule
-		<k> lookup(I:Id) => lookup(Env:Map, I) ... </k>
+		<k> lookup(I:Id) => lookupM(Env:Map, I) ... </k>
 		<contexts> (_:LocationValue, Env, _:K) ... </contexts>
 
 /* ************************************************************************** */
 
-	syntax K ::= "lookup" "(" Map "," Id ")"
+	syntax StoreValue ::=
+		Value
+		| Location
+
+	syntax K ::= "lookupM" "(" Map "," Id ")"
+
 	rule
-		<k> lookup(X:Map I:Id |-> V:Value Y:Map, I) => V ... </k>
-	rule
-		<k> lookup(X:Map I:Id |-> L:Location Y:Map, I) => L ... </k>
+		<k> lookupM(I:Id |-> V:StoreValue _:Map, I) => V ... </k>
+/*	rule
+		<k> lookup(I:Id |-> L:Location _:Map, I) => L ... </k>*/
 
 /* ************************************************************************** */
 
@@ -51,11 +56,11 @@ module CRO-CORE-SEMANTIC-CONTEXTS
 		<store>
 			...
 				L |-> objectClosure(
-					X
+					_:Bag
 					<interface> If </interface>
 					<bindings> B </bindings>
 					<state> S </state>
-					Y
+					_:Bag
 				)
 			...
 		</store>
@@ -102,9 +107,9 @@ module CRO-CORE-SEMANTIC-OBJECTS
 		<store>
 			...
 				L |-> objectClosure(
-					X
+					_:Bag
 					<active> false => true </active>
-					Y
+					_:Bag
 				)
 			...
 		</store>							[transition]
@@ -117,9 +122,9 @@ module CRO-CORE-SEMANTIC-OBJECTS
 		<store>
 			...
 				L |-> objectClosure(
-					X
+					_:Bag
 					<active> true => false </active>
-					Y
+					_:Bag
 				)
 			...
 		</store>							[transition]
@@ -128,7 +133,7 @@ module CRO-CORE-SEMANTIC-OBJECTS
 
 	context	'_._(HOLE,, _:Id)
 	rule
-		<k> '_._(objectClosure(X <interface> If:Map </interface> Y),, I:Id) => lookup(If, I) ... </k>
+		<k> '_._(objectClosure(X <interface> If:Map </interface> Y),, I:Id) => lookupM(If, I) ... </k>
 
 /* ************************************************************************** */
 
@@ -139,7 +144,7 @@ module CRO-CORE-SEMANTIC-OBJECTS
 
 	rule
 		<k> objectState(I:Id) => objectState(L:Int) ... </k>
-		<contexts> (_:LocationValue, X:Map I |-> location(L) Y:Map, _:K) ... </contexts>
+		<contexts> (_:LocationValue, I |-> location(L) _:Map, _:K) ... </contexts>
 
 /* ************************************************************************** */
 
@@ -214,14 +219,22 @@ module CRO-CORE-SEMANTIC-MESSAGES
 	context messageClosureCreate('_`(_`)(HOLE,, _))
 	context messageClosureCreate('_`(_`)(_,, HOLE))
 	rule
-		<k> messageClosureCreate('_`(_`)(M:Method,, Vs:Values)) => messageClosure('_`(_`)(M,, Vs)) ... </k>
+		<k>
+			messageClosureCreate('_`(_`)(M:Method,, Vs:Values)) => messageClosure('_`(_`)(M,, Vs))
+			...
+		</k>
 
 /* ************************************************************************** */
 
 	context send (HOLE => messageClosureCreate(HOLE));
 	rule
 			<message>
-				... <k> send messageClosure('_`(_`)(M:Method,, Vs:Values)) ; => . ... </k> ...
+				...
+				<k>
+					send ( messageClosure('_`(_`)(M:Method,, Vs:Values)) ) ; => .
+					...
+				</k>
+				...
 			</message>
 			(. =>
 				<message>
@@ -258,8 +271,7 @@ module CRO-CORE-SEMANTIC
 /* ************************************************************************** */
 
 	rule
-		<k> location(L:Int) => V:Value ... </k>
-		<store> ... L |-> V ... </store>
+		<k> location(L:Int) => valueLoad(L) ... </k>
 
 /* ************************************************************************** */
 

@@ -18,10 +18,12 @@
  */
 
 require "cro-core-syntax.k"
+require "cro-core-config.k"
 
 module CRO-CORE-PARSER
 
 	imports CRO-CORE-SYNTAX
+	imports CRO-CORE-CONFIG
 
 	syntax K ::= "programParse" "(" K ")"
 
