@@ -3,6 +3,5 @@ module test {
 		method init() {
 			print("Hello World!\r\n");
 		}
-		method init_again() {}
 	}
 }
