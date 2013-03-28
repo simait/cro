@@ -138,6 +138,7 @@ module CRO-CORE-SEMANTIC-OBJECTS
 /* ************************************************************************** */
 
 	syntax ObjectState ::= "objectState" "(" Int ")"
+	syntax ObjectState ::= "objectState" "(" Id ")"
 	syntax Value ::= ObjectState
 
 /* ************************************************************************** */
