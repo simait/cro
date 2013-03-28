@@ -131,7 +131,12 @@ module CRO-CORE-SEMANTIC-OBJECTS
 
 /* ************************************************************************** */
 
-	context	'_._(HOLE,, _:Id)
+	rule
+		'_._(O:Id,, I:Id) => O ~> '_._(HOLE,, I)			[heat]
+	rule
+		R:KResult ~> '_._(HOLE,, I:Id) => '_._(R,, I)			[cool]
+
+	/*context	'_._(HOLE,, _:Id)*/
 	rule
 		<k> '_._(objectClosure(X <interface> If:Map </interface> Y),, I:Id) => lookupM(If, I) ... </k>
 
@@ -149,7 +154,12 @@ module CRO-CORE-SEMANTIC-OBJECTS
 
 /* ************************************************************************** */
 
-	context (HOLE => objectState(HOLE)) := _ ;
+	/*context (HOLE => objectState(HOLE)) := _ ;*/
+	rule
+		I:Id := E:Exp ; => objectState(I) ~> HOLE := E;			[heat]
+	rule
+		objectState(L:Int) ~> HOLE := E1:Exp ; => objectState(L) := E1 ;[cool]
+
 	rule
 		<k> objectState(L:Int) := V:Value ; => valueStore(L, V) ... </k>
 
@@ -227,7 +237,11 @@ module CRO-CORE-SEMANTIC-MESSAGES
 
 /* ************************************************************************** */
 
-	context send (HOLE => messageClosureCreate(HOLE));
+	/*context send (HOLE => messageClosureCreate(HOLE));*/
+	rule
+		send E:Exp ; => messageClosureCreate(E) ~> send HOLE ;		[heat]
+	rule
+		R:KResult ~> send HOLE ; => send R ;				[cool]
 	rule
 			<message>
 				...
