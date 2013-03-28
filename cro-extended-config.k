@@ -38,7 +38,7 @@ module CRO-EXTENDED-CONFIG
 			<store color="red"> .Map </store>
 			<nextLocation color="blue"> 0 </nextLocation>
 
-			<input stream="stdin"> $IN:List </input>
+			/*<input stream="stdin"> $IN:List </input>*/
 			<output stream="stdout"> .List </output>
 
 		</T>
