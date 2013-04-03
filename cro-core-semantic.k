@@ -93,6 +93,42 @@ endmodule
 
 /* ************************************************************************** */
 
+module CRO-CORE-SEMANTIC-OBJECTS-ACTIVATE
+
+	imports CRO-CORE-SEMANTIC-OBJECTS
+
+/* ************************************************************************** */
+
+	rule
+		<k> objectActivate(locationValue(L:Int)) => . ... </k>
+		<store>
+			...
+				L |-> objectClosure(
+					<active> false => true </active>
+					_:Bag
+				)
+			...
+		</store>							[transition]
+
+/* ************************************************************************** */
+
+	rule
+		<k> objectDeactivate(locationValue(L:Int)) => . ... </k>
+		<store>
+			...
+				L |-> objectClosure(
+					<active> true => false </active>
+					_:Bag
+				)
+			...
+		</store>							[transition]
+
+/* ************************************************************************** */
+
+endmodule
+
+/* ************************************************************************** */
+
 module CRO-CORE-SEMANTIC-OBJECTS
 
 	imports CRO-CORE-SYNTAX
@@ -102,32 +138,10 @@ module CRO-CORE-SEMANTIC-OBJECTS
 /* ************************************************************************** */
 
 	syntax K ::= "objectActivate" "(" LocationValue ")"			[strict]
-	rule
-		<k> objectActivate(locationValue(L:Int)) => . ... </k>
-		<store>
-			...
-				L |-> objectClosure(
-					_:Bag
-					<active> false => true </active>
-					_:Bag
-				)
-			...
-		</store>							[transition]
 
 /* ************************************************************************** */
 
 	syntax K ::= "objectDeactivate" "(" LocationValue ")"			[strict]
-	rule
-		<k> objectDeactivate(locationValue(L:Int)) => . ... </k>
-		<store>
-			...
-				L |-> objectClosure(
-					_:Bag
-					<active> true => false </active>
-					_:Bag
-				)
-			...
-		</store>							[transition]
 
 /* ************************************************************************** */
 
@@ -135,10 +149,8 @@ module CRO-CORE-SEMANTIC-OBJECTS
 		'_._(O:Id,, I:Id) => O ~> '_._(HOLE,, I)			[heat]
 	rule
 		R:KResult ~> '_._(HOLE,, I:Id) => '_._(R,, I)			[cool]
-
-	/*context	'_._(HOLE,, _:Id)*/
 	rule
-		<k> '_._(objectClosure(X <interface> If:Map </interface> Y),, I:Id) => lookupM(If, I) ... </k>
+		<k> '_._(objectClosure(<interface> If:Map </interface> _:Bag),, I:Id) => lookupM(If, I) ... </k>
 
 /* ************************************************************************** */
 
@@ -154,11 +166,10 @@ module CRO-CORE-SEMANTIC-OBJECTS
 
 /* ************************************************************************** */
 
-	/*context (HOLE => objectState(HOLE)) := _ ;*/
 	rule
 		I:Id := E:Exp ; => objectState(I) ~> HOLE := E;			[heat]
 	rule
-		objectState(L:Int) ~> HOLE := E1:Exp ; => objectState(L) := E1 ;[cool]
+		objectState(L:Int) ~> HOLE := E:Exp ; => objectState(L) := E ;	[cool]
 
 	rule
 		<k> objectState(L:Int) := V:Value ; => valueStore(L, V) ... </k>

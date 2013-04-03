@@ -141,9 +141,8 @@ module CRO-CORE-INIT
 		<store>
 			...
 				O |-> objectClosure(
-					X
 					<interface> If:Map => If[location(L)/I] </interface>
-					Y
+					_:Bag
 				)
 			...
 		</store>
@@ -156,9 +155,8 @@ module CRO-CORE-INIT
 		<store>
 			...
 				O |-> objectClosure(
-					X
 					<bindings> B:Map => B[location(L)/I] </bindings>
-					Y
+					_:Bag
 				)
 			...
 		</store>
@@ -182,9 +180,8 @@ module CRO-CORE-INIT
 		<store>
 			...
 				O |-> objectClosure(
-					X
 					<state> S:Map => S[location(L)/I] </state>
-					Y
+					_:Bag
 				)
 			...
 		</store>

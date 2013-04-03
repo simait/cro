@@ -29,6 +29,7 @@ module CRO-CORE
 	imports CRO-CORE-SYNTAX
 	imports CRO-CORE-PARSER
 	imports CRO-CORE-SEMANTIC
+	imports CRO-CORE-SEMANTIC-OBJECTS-ACTIVATE
 	imports CRO-CORE-INIT
 
 	rule
