@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><T>
+	<rule filename="Command line pattern" loc="(1,1,1,53)">
+	<body>
+		<cell endLabel="generatedTop" filename="Command line pattern" label="generatedTop" loc="(1,6,1,42)" sort="BagItem">
+			<var filename="Command line pattern" loc="(1,21,1,26)" name="B" sort="Bag" userTyped="true"/>
+			
+		</cell>
+		
+	</body>
+	<attributes filename="Command line pattern" loc="(1,1,1,53)">
+		<tag filename="Command line pattern" key="anywhere" loc="(1,44,1,52)"/>
+		
+	</attributes>
+	</rule>
+	
+</T>

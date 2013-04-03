@@ -1,0 +1,211 @@
+module Program
+
+imports Common
+imports KBuiltinsBasic
+exports
+
+context-free syntax
+context-free start-symbols
+Bool Method LocationValue DzId Ddecl Cmd ListItem Module MessageClosure KResult DzFloat K DzString Exp DzInt Ids Int DzBool Object StoreValue Exps Float Values Value Cmds Location ObjectState String Id K
+context-free syntax
+	Exp ":=" InsertDzExp ";" -> Cmd {cons("Cmd1439Syn")}
+	DzFloat -> Float {}
+	Value -> Exp {}
+	Id "=" "new" InsertDzExp "(" InsertDzExps ")" ";" -> Ddecl {cons("Ddecl1445Syn")}
+	"objectClosure" "(" InsertDzBag ")" -> Object {cons("Object1454Syn")}
+	"objectActivate" "(" InsertDzLocationValue ")" -> K {cons("K1482Syn")}
+	"locationValue" "(" InsertDzInt ")" -> LocationValue {cons("LocationValue1458Syn")}
+	"objectCreate" "(" InsertDzId "," InsertDzValues ")" -> K {cons("K1469Syn")}
+	"location" "(" InsertDzInt ")" -> Location {cons("Location1457Syn")}
+	Bool -> Value {}
+	"contextLeave" "(" InsertDzValue ")" -> K {cons("K1478Syn")}
+	"programDone" -> K {cons("K1492Syn")}
+	"objectState" "(" InsertDzId ")" -> ObjectState {cons("ObjectState1485Syn")}
+	"{" InsertDzCmds "}" -> Cmd {cons("Cmd1437Syn")}
+	String -> Value {}
+	Int -> Value {}
+	Value -> StoreValue {}
+	Value -> KResult {}
+	"contextsInit" "(" InsertDzValue ")" -> K {cons("K1473Syn")}
+	MessageClosure -> Value {}
+	"module" InsertDzId Cmd -> Module {cons("Module1450Syn")}
+	DzId -> Id {}
+	"messageClosureCreate" "(" InsertDzExp ")" -> K {cons("K1489Syn")}
+	"objectBindAddAll" "(" InsertDzIds "," InsertDzValues ")" -> K {cons("K1466Syn")}
+	"objectDeactivate" "(" InsertDzLocationValue ")" -> K {cons("K1483Syn")}
+	DzString -> String {}
+	Id -> Exp {}
+	"return" InsertDzExp ";" -> Cmd {cons("Cmd1442Syn")}
+	"lookup" "(" InsertDzId ")" -> K {cons("K1475Syn")}
+	"programInit" -> K {cons("K1460Syn")}
+	"valueLoad" "(" InsertDzInt ")" -> K {cons("K1464Syn")}
+	"halt" ";" -> Cmd {cons("Cmd1443Syn")}
+	"objectPush" "(" InsertDzLocationValue ")" -> K {cons("K1470Syn")}
+	"{" "}" -> Cmd {cons("Cmd1436Syn")}
+	Ddecl -> Cmd {}
+	"inferSRP" -> K {cons("K1493Syn")}
+	"objectBindAdd" "(" InsertDzId "," InsertDzLocationValue ")" -> K {cons("K1465Syn")}
+	{Exp ","}* -> Exps {cons("Exps1ListSyn")}
+	"valueAlloc" "(" InsertDzValue ")" -> K {cons("K1462Syn")}
+	"root" -> Id {cons("Id1432Syn")}
+	"var" InsertDzExp ":=" InsertDzValue ";" -> Ddecl {cons("Ddecl1446Syn")}
+	Cmds Cmds -> Cmds {right, cons("Cmds1444Syn")}
+	"objectStateAdd" "(" InsertDzId "," InsertDzLocationValue ")" -> K {cons("K1467Syn")}
+	"class" "(" InsertDzIds "," InsertDzCmds ")" -> K {cons("K1453Syn")}
+	{Value ","}* -> Values {cons("Values1ListSyn")}
+	"lookupM" "(" InsertDzMap "," InsertDzId ")" -> K {cons("K1476Syn")}
+	"this" -> K {cons("K1480Syn")}
+	"programEval" -> K {cons("K1490Syn")}
+	ObjectState -> Value {}
+	Exp "." Id -> Exp {cons("Exp1434Syn")}
+	"init" -> Id {cons("Id1433Syn")}
+	DzBool -> Bool {}
+	"nothing" -> Value {cons("Value1449Syn")}
+	"objectInterfaceAdd" "(" InsertDzId "," InsertDzLocationValue ")" -> K {cons("K1468Syn")}
+	"messageDone" -> K {cons("K1486Syn")}
+	Object -> Value {}
+	Location -> StoreValue {}
+	{Id ","}* -> Ids {cons("Ids1ListSyn")}
+	"locationValueVoid" -> LocationValue {cons("LocationValue1459Syn")}
+	"valueStore" "(" InsertDzInt "," InsertDzK ")" -> K {cons("K1463Syn")}
+	"objectPop" "(" ")" -> K {cons("K1472Syn")}
+	"contextBindAdd" "(" InsertDzId "," InsertDzValue ")" -> K {cons("K1479Syn")}
+	"programLoaded" "(" InsertDzK ")" -> K {cons("K1474Syn")}
+	"programParse" "(" InsertDzK ")" -> K {cons("K1452Syn")}
+	"method" InsertDzId "(" InsertDzIds ")" Cmd -> Ddecl {cons("Ddecl1447Syn")}
+	Method -> Value {}
+	"send" InsertDzExp ";" -> Cmd {cons("Cmd1440Syn")}
+	"class" InsertDzId "(" InsertDzExps ")" Cmd -> Ddecl {cons("Ddecl1448Syn")}
+	DzInt -> Int {}
+	"contextEnter" "(" InsertDzLocationValue "," InsertDzK ")" -> K {cons("K1477Syn")}
+	Exp ";" -> Cmd {cons("Cmd1438Syn")}
+	Exp "(" InsertDzExps ")" -> Exp {cons("Exp1435Syn")}
+	"messageClosure" "(" InsertDzExp ")" -> MessageClosure {cons("MessageClosure1488Syn")}
+	LocationValue -> Value {}
+	Cmd -> Cmds {}
+	"objectState" "(" InsertDzInt ")" -> ObjectState {cons("ObjectState1484Syn")}
+	"methodParamsBind" "(" InsertDzIds "," InsertDzValues ")" -> K {cons("K1487Syn")}
+	"methodClosure" "(" InsertDzBag ")" -> Method {cons("Method1455Syn")}
+	"(" InsertDzValue "," InsertDzMap "," InsertDzK ")" -> ListItem {cons("ListItem1456Syn")}
+	Values -> InsertDzValues
+	Bag -> InsertDzBag
+	Exp -> InsertDzExp
+	Cmds -> InsertDzCmds
+	Value -> InsertDzValue
+	Map -> InsertDzMap
+	LocationValue -> InsertDzLocationValue
+	Id -> InsertDzId
+	Ids -> InsertDzIds
+	Int -> InsertDzInt
+	Exps -> InsertDzExps
+	K -> InsertDzK
+
+
+	DzDzString		-> DzString	{cons("DzString1Const")}
+	DzDzInt		-> DzInt	{cons("DzInt1Const")}
+	DzDzId		-> DzId	{cons("DzId1Const")}
+	DzDzBool		-> DzBool	{cons("DzBool1Const")}
+	DzDzFloat		-> DzFloat	{cons("DzFloat1Const")}
+
+	DzDzINT		-> DzDzInt
+	DzDzID		-> DzDzId
+	DzDzSTRING	-> DzDzString
+	DzDzFLOAT	-> DzDzFloat
+
+
+%% start symbols subsorts
+	Bool		-> K
+	Method		-> K
+	LocationValue		-> K
+	DzId		-> K
+	Ddecl		-> K
+	Cmd		-> K
+	Module		-> K
+	MessageClosure		-> K
+	DzFloat		-> K
+	DzString		-> K
+	Exp		-> K
+	DzInt		-> K
+	Int		-> K
+	DzBool		-> K
+	Object		-> K
+	StoreValue		-> K
+	Float		-> K
+	Value		-> K
+	Cmds		-> K
+	Location		-> K
+	ObjectState		-> K
+	String		-> K
+	Id		-> K
+lexical syntax
+	"true" -> DzDzBool
+	"false" -> DzDzBool
+
+
+	"send" -> DzDzID {reject}
+	"locationValue" -> DzDzID {reject}
+	"location" -> DzDzID {reject}
+	"root" -> DzDzID {reject}
+	"programParse" -> DzDzID {reject}
+	"programEval" -> DzDzID {reject}
+	"locationValueVoid" -> DzDzID {reject}
+	"lookup" -> DzDzID {reject}
+	"messageDone" -> DzDzID {reject}
+	"false" -> DzDzID {reject}
+	"objectBindAdd" -> DzDzID {reject}
+	"class" -> DzDzID {reject}
+	"init" -> DzDzID {reject}
+	"objectBindAddAll" -> DzDzID {reject}
+	"messageClosureCreate" -> DzDzID {reject}
+	"programLoaded" -> DzDzID {reject}
+	"objectStateAdd" -> DzDzID {reject}
+	"objectCreate" -> DzDzID {reject}
+	"this" -> DzDzID {reject}
+	"valueStore" -> DzDzID {reject}
+	"var" -> DzDzID {reject}
+	"methodParamsBind" -> DzDzID {reject}
+	"objectDeactivate" -> DzDzID {reject}
+	"programDone" -> DzDzID {reject}
+	"valueLoad" -> DzDzID {reject}
+	"valueAlloc" -> DzDzID {reject}
+	"methodClosure" -> DzDzID {reject}
+	"contextBindAdd" -> DzDzID {reject}
+	"contextEnter" -> DzDzID {reject}
+	"messageClosure" -> DzDzID {reject}
+	"module" -> DzDzID {reject}
+	"inferSRP" -> DzDzID {reject}
+	"contextsInit" -> DzDzID {reject}
+	"return" -> DzDzID {reject}
+	"true" -> DzDzID {reject}
+	"objectInterfaceAdd" -> DzDzID {reject}
+	"objectClosure" -> DzDzID {reject}
+	"new" -> DzDzID {reject}
+	"contextLeave" -> DzDzID {reject}
+	"objectActivate" -> DzDzID {reject}
+	"nothing" -> DzDzID {reject}
+	"method" -> DzDzID {reject}
+	"objectState" -> DzDzID {reject}
+	"objectPop" -> DzDzID {reject}
+	"programInit" -> DzDzID {reject}
+	"halt" -> DzDzID {reject}
+	"objectPush" -> DzDzID {reject}
+	"lookupM" -> DzDzID {reject}
+
+lexical restrictions
+	%% follow restrictions
+	"objectBindAdd" -/- [A].[l].[l]
+	"messageClosure" -/- [C].[r].[e].[a].[t].[e]
+	"locationValue" -/- [V].[o].[i].[d]
+	"method" -/- [P].[a].[r].[a].[m].[s].[B].[i].[n].[d]
+	"location" -/- [V].[a].[l].[u].[e].[V].[o].[i].[d]
+	"location" -/- [V].[a].[l].[u].[e]
+	"objectState" -/- [A].[d].[d]
+	"lookup" -/- [M]
+	"method" -/- [C].[l].[o].[s].[u].[r].[e]
+
+
+lexical syntax
+context-free syntax
+
+
+context-free restrictions

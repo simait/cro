@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<T>
+	<term sort="Module" cons="Module1450Syn" loc="(1,1,21,3)">
+		<const sort="#Id" value="test" loc="(1,8,1,12)"/>
+		<term sort="Cmd" cons="Cmd1437Syn" loc="(1,13,21,2)">
+			<term sort="Cmds" cons="Cmds1444Syn" loc="(2,2,20,3)">
+				<term sort="Decl" cons="Ddecl1448Syn" loc="(2,2,12,3)">
+					<const sort="#Id" value="object" loc="(2,8,2,14)"/>
+					<empty sort="Exps" loc="(2,15,2,15)"/>
+					<term sort="Cmd" cons="Cmd1437Syn" loc="(2,17,12,3)">
+						<term sort="Cmds" cons="Cmds1444Syn" loc="(3,3,11,4)">
+							<term sort="Decl" cons="Ddecl1446Syn" loc="(3,3,3,18)">
+								<const sort="#Id" value="myref" loc="(3,7,3,12)"/>
+								<const sort="#Int" value="0" loc="(3,16,3,17)"/>
+								
+							</term>
+							<term sort="Cmds" cons="Cmds1444Syn" loc="(5,3,11,4)">
+								<term sort="Decl" cons="Ddecl1447Syn" loc="(5,3,7,4)">
+									<const sort="#Id" value="invoke" loc="(5,10,5,16)"/>
+									<empty sort="Ids" loc="(5,17,5,17)"/>
+									<term sort="Cmd" cons="Cmd1437Syn" loc="(5,19,7,4)">
+										<term sort="Cmd" cons="Cmd1438Syn" loc="(6,4,6,12)">
+											<term sort="Exp" cons="Exp1435Syn" loc="(6,4,6,11)">
+												<const sort="#Id" value="myref" loc="(6,4,6,9)"/>
+												<empty sort="Exps" loc="(6,10,6,10)"/>
+												
+											</term>
+											
+										</term>
+										
+									</term>
+									
+								</term>
+								<term sort="Decl" cons="Ddecl1447Syn" loc="(9,3,11,4)">
+									<const sort="#Id" value="set" loc="(9,10,9,13)"/>
+									<term sort="Ids" cons="Ids1ListSyn" loc="(9,14,9,15)">
+										<const sort="#Id" value="m" loc="(9,14,9,15)"/>
+										<empty sort="Ids" loc="(9,14,9,15)"/>
+										
+									</term>
+									<term sort="Cmd" cons="Cmd1437Syn" loc="(9,17,11,4)">
+										<term sort="Cmd" cons="Cmd1439Syn" loc="(10,4,10,15)">
+											<const sort="#Id" value="myref" loc="(10,4,10,9)"/>
+											<const sort="#Id" value="m" loc="(10,13,10,14)"/>
+											
+										</term>
+										
+									</term>
+									
+								</term>
+								
+							</term>
+							
+						</term>
+						
+					</term>
+					
+				</term>
+				<term sort="Decl" cons="Ddecl1448Syn" loc="(13,2,20,3)">
+					<term sort="Id" cons="Id1432Syn" loc="(13,8,13,12)">
+						
+					</term>
+					<empty sort="Exps" loc="(13,13,13,13)"/>
+					<term sort="Cmd" cons="Cmd1437Syn" loc="(13,15,20,3)">
+						<term sort="Cmds" cons="Cmds1444Syn" loc="(14,3,19,4)">
+							<term sort="Decl" cons="Ddecl1445Syn" loc="(14,3,14,20)">
+								<const sort="#Id" value="a" loc="(14,3,14,4)"/>
+								<const sort="#Id" value="object" loc="(14,11,14,17)"/>
+								<empty sort="Exps" loc="(14,18,14,18)"/>
+								
+							</term>
+							<term sort="Cmds" cons="Cmds1444Syn" loc="(15,3,19,4)">
+								<term sort="Decl" cons="Ddecl1445Syn" loc="(15,3,15,20)">
+									<const sort="#Id" value="b" loc="(15,3,15,4)"/>
+									<const sort="#Id" value="object" loc="(15,11,15,17)"/>
+									<empty sort="Exps" loc="(15,18,15,18)"/>
+									
+								</term>
+								<term sort="Decl" cons="Ddecl1447Syn" loc="(16,3,19,4)">
+									<term sort="Id" cons="Id1433Syn" loc="(16,10,16,14)">
+										
+									</term>
+									<empty sort="Ids" loc="(16,15,16,15)"/>
+									<term sort="Cmd" cons="Cmd1437Syn" loc="(16,17,19,4)">
+										<term sort="Cmds" cons="Cmds1444Syn" loc="(17,4,18,25)">
+											<term sort="Cmd" cons="Cmd1440Syn" loc="(17,4,17,25)">
+												<term sort="Exp" cons="Exp1435Syn" loc="(17,9,17,24)">
+													<term sort="Exp" cons="Exp1434Syn" loc="(17,9,17,14)">
+														<const sort="#Id" value="a" loc="(17,9,17,10)"/>
+														<const sort="#Id" value="set" loc="(17,11,17,14)"/>
+														
+													</term>
+													<term sort="Exps" cons="Exps1ListSyn" loc="(17,15,17,23)">
+														<term sort="Exp" cons="Exp1434Syn" loc="(17,15,17,23)">
+															<const sort="#Id" value="b" loc="(17,15,17,16)"/>
+															<const sort="#Id" value="invoke" loc="(17,17,17,23)"/>
+															
+														</term>
+														<empty sort="Exps" loc="(17,15,17,23)"/>
+														
+													</term>
+													
+												</term>
+												
+											</term>
+											<term sort="Cmd" cons="Cmd1440Syn" loc="(18,4,18,25)">
+												<term sort="Exp" cons="Exp1435Syn" loc="(18,9,18,24)">
+													<term sort="Exp" cons="Exp1434Syn" loc="(18,9,18,14)">
+														<const sort="#Id" value="b" loc="(18,9,18,10)"/>
+														<const sort="#Id" value="set" loc="(18,11,18,14)"/>
+														
+													</term>
+													<term sort="Exps" cons="Exps1ListSyn" loc="(18,15,18,23)">
+														<term sort="Exp" cons="Exp1434Syn" loc="(18,15,18,23)">
+															<const sort="#Id" value="a" loc="(18,15,18,16)"/>
+															<const sort="#Id" value="invoke" loc="(18,17,18,23)"/>
+															
+														</term>
+														<empty sort="Exps" loc="(18,15,18,23)"/>
+														
+													</term>
+													
+												</term>
+												
+											</term>
+											
+										</term>
+										
+									</term>
+									
+								</term>
+								
+							</term>
+							
+						</term>
+						
+					</term>
+					
+				</term>
+				
+			</term>
+			
+		</term>
+		
+	</term>
+	
+</T>
