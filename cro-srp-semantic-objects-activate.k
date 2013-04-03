@@ -47,7 +47,7 @@ module CRO-SRP-SEMANTIC-OBJECTS-ACTIVATE
 				)
 			...
 		</store>
-		/*when (CC <Int OC)*/						[transition]
+		when (CC <Int OC)						[transition]
 
 /* ************************************************************************** */
 
