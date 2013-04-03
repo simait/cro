@@ -1,0 +1,21 @@
+module test {
+	class object() {
+		var myref := 0;
+
+		method invoke() {
+			myref();
+		}
+
+		method set(m) {
+			myref := m;
+		}
+	}
+	class root() {
+		a = new object();
+		b = new object();
+		method init() {
+			send a.set(b.invoke);
+			send b.set(a.invoke);
+		}
+	}
+}
