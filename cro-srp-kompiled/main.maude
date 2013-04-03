@@ -1,8 +1,0 @@
-load "/home/simait/src/others/k-framework/trunk/dist/bin/maude/lib/k-prelude"
-load "base.maude"
-load "builtins.maude"
-mod CRO-SRP is 
-  including CRO-SRP-BASE .
-  including CRO-SRP-BUILTINS .
-  including K-STRICTNESS-DEFAULTS .
-endm

@@ -1,4 +1,4 @@
-TARGET	:= cro-srp
+TARGET	:= cro-core
 
 .PHONY: all
 
