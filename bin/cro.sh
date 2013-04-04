@@ -7,7 +7,7 @@ source $SCRIPT_DIR/cro-common.sh
 
 PREFIX=cro-output-
 
-krun --no-color "$@" | csplit -s -f $PREFIX - '/<T>/' && cat "${PREFIX}00"
+krun --compiled-def cro-srp-kompiled --no-color "$@" | csplit -s -f $PREFIX - '/<T>/' && cat "${PREFIX}00"
 
 if ! executeOK "${PREFIX}01"
 then

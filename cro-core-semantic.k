@@ -269,20 +269,22 @@ module CRO-CORE-SEMANTIC-MESSAGES-SEND
 
 /* ************************************************************************** */
 	rule
-		<message>
-			...
-			<k>
-				send ( messageClosure('_`(_`)(M:Method,, Vs:Values)) ) ; => .
-				...
-			</k>
-			...
-		</message>
-		(. =>
+		<messages>
 			<message>
-				<k> '_`(_`)(M,, Vs); ~> messageDone </k>
-				<contexts> .List </contexts>
+				<k>
+					send ( messageClosure('_`(_`)(M:Method,, Vs:Values)) ) ; => .
+					...
+				</k>
+				...
 			</message>
-		)							[transition]
+			(. =>
+				<message>
+					<k> '_`(_`)(M,, Vs); ~> messageDone </k>
+					<contexts> .List </contexts>
+				</message>
+			)
+			...
+		</messages>							[transition]
 
 /* ************************************************************************** */
 

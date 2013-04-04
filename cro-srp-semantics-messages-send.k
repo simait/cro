@@ -30,21 +30,108 @@ module CRO-SRP-SEMANTIC-MESSAGES-SEND
 	imports CRO-CORE-SEMANTIC-MESSAGES
 
 /* ************************************************************************** */
+
+	syntax K ::= "schedule" "(" Method "," Values ")"
+
+/* ************************************************************************** */
+
 	rule
-		<message>
+		<k>
+			schedule (
+				methodClosure(
+					<object> locationValue(O:Int) </object>
+					<params> Is:Ids </params>
+					<commands> Cs:Cmds </commands>
+				),
+				Vs:Values
+			) => '_`(_`)(
+					methodClosure(
+						<object> locationValue(O:Int) </object>
+						<params> Is:Ids </params>
+						<commands> Cs:Cmds </commands>
+					),,
+					Vs:Values
+				) ;
 			...
-			<k>
-				send ( messageClosure('_`(_`)(M:Method,, Vs:Values)) ) ; => .
-				...
-			</k>
+		</k>
+		<systemceiling> ListItem(CC:Int) ... </systemceiling>
+		<store>
 			...
-		</message>
-		(. =>
+			L |-> objectClosure(<ceiling> OC:Int </ceiling> _:Bag)
+			...
+		</store>
+		when OC >Int CC:Int						[transition]
+
+/* ************************************************************************** */
+
+	syntax ListItem ::= "(" Method "," Values ")"
+
+/* ************************************************************************** */
+
+	rule
+		<k>
+			schedule (
+				methodClosure(
+					<object> locationValue(O:Int) </object>
+					<params> Is:Ids </params>
+					<commands> Cs:Cmds </commands>
+				),
+				Vs:Values
+			) => .
+			...
+		</k>
+		<systemceiling> ListItem(CC:Int) ... </systemceiling>
+		<messagequeue>
+			. => ListItem(
+				methodClosure(
+					<object> locationValue(O:Int) </object>
+					<params> Is:Ids </params>
+					<commands> Cs:Cmds </commands>
+				),
+				Vs:Values
+			) ...
+		</messagequeue>
+		<store>
+			...
+			L |-> objectClosure(<ceiling> OC:Int </ceiling> _:Bag)
+			...
+		</store>
+		when OC <=Int CC:Int						[transition]
+
+/* ************************************************************************** */
+
+	rule
+		<k> messageDone => schedule(MC, Vs) ~> messageDone </k>
+		<messagequeue>
+			ListItem(
+				MC:Method,
+				Vs:Values
+			) => .
+			...
+		</messagequeue>
+
+/* ************************************************************************** */
+
+	rule
+		<k> send ( messageClosure('_`(_`)(M:Method,, Vs:Values)) ) ; => schedule(M, Vs) ... </k>
+	/*
+		<messages>
 			<message>
-				<k> '_`(_`)(M,, Vs); ~> messageDone </k>
-				<contexts> .List </contexts>
+				<k>
+					send ( messageClosure('_`(_`)(M:Method,, Vs:Values)) ) ; => .
+					...
+				</k>
+				...
 			</message>
-		)							[transition]
+			(. =>
+				<message>
+					<k> '_`(_`)(M,, Vs); ~> messageDone </k>
+					<contexts> .List </contexts>
+				</message>
+			)
+			...
+		</messages>							[transition]
+	*/
 
 /* ************************************************************************** */
 
