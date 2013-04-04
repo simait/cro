@@ -25,42 +25,26 @@ require "cro-srp-config.k"
 
 /* ************************************************************************** */
 
-module CRO-SRP-SEMANTIC-OBJECTS-ACTIVATE
+module CRO-SRP-SEMANTIC-MESSAGES-SEND
 
-	imports CRO-CORE-SEMANTIC-OBJECTS
-
-/* ************************************************************************** */
-
-	imports CRO-SRP-CONFIG
+	imports CRO-CORE-SEMANTIC-MESSAGES
 
 /* ************************************************************************** */
-
 	rule
-		<k> objectActivate(locationValue(L:Int)) => . ... </k>
-		<systemceiling> (. => ListItem(maxInt(OC:Int, CC:Int))) ListItem(CC) ... </systemceiling>
-		<store>
+		<message>
 			...
-				L |-> objectClosure(
-					<active> false => true </active>
-					<ceiling> OC </ceiling>
-					_:Bag
-				)
+			<k>
+				send ( messageClosure('_`(_`)(M:Method,, Vs:Values)) ) ; => .
+				...
+			</k>
 			...
-		</store>							[transition]
-
-/* ************************************************************************** */
-
-	rule
-		<k> objectDeactivate(locationValue(L:Int)) => . ... </k>
-		<systemceiling> (ListItem(CC:Int) => .) ... </systemceiling>
-		<store>
-			...
-				L |-> objectClosure(
-					<active> true => false </active>
-					_:Bag
-				)
-			...
-		</store>							[transition]
+		</message>
+		(. =>
+			<message>
+				<k> '_`(_`)(M,, Vs); ~> messageDone </k>
+				<contexts> .List </contexts>
+			</message>
+		)							[transition]
 
 /* ************************************************************************** */
 

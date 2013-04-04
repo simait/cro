@@ -28,13 +28,15 @@ require "cro-core-init.k"
 require "cro-srp-config.k"
 require "cro-srp-infer-ceilings.k"
 require "cro-srp-semantic-objects-activate.k"
+require "cro-srp-semantics-messages-send.k"
 
 /* ************************************************************************** */
 
 module CRO-SRP
 
-	imports CRO-SRP-CONFIG	
+	imports CRO-SRP-CONFIG
 	imports CRO-SRP-SEMANTIC-OBJECTS-ACTIVATE
+	imports CRO-SRP-SEMANTIC-MESSAGES-SEND
 	imports CRO-SRP-INFER-CEILINGS
 	
 /* ************************************************************************** */

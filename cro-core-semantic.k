@@ -253,26 +253,36 @@ module CRO-CORE-SEMANTIC-MESSAGES
 		send E:Exp ; => messageClosureCreate(E) ~> send HOLE ;		[heat]
 	rule
 		R:KResult ~> send HOLE ; => send R ;				[cool]
-	rule
-			<message>
-				...
-				<k>
-					send ( messageClosure('_`(_`)(M:Method,, Vs:Values)) ) ; => .
-					...
-				</k>
-				...
-			</message>
-			(. =>
-				<message>
-					<k> '_`(_`)(M,, Vs); ~> messageDone </k>
-					<contexts> .List </contexts>
-				</message>
-			)							[transition]
 
 /* ************************************************************************** */
 
 	rule
 		<k> V:Value ; => . ... </k>
+
+/* ************************************************************************** */
+
+endmodule
+
+module CRO-CORE-SEMANTIC-MESSAGES-SEND
+
+	imports CRO-CORE-SEMANTIC-MESSAGES
+
+/* ************************************************************************** */
+	rule
+		<message>
+			...
+			<k>
+				send ( messageClosure('_`(_`)(M:Method,, Vs:Values)) ) ; => .
+				...
+			</k>
+			...
+		</message>
+		(. =>
+			<message>
+				<k> '_`(_`)(M,, Vs); ~> messageDone </k>
+				<contexts> .List </contexts>
+			</message>
+		)							[transition]
 
 /* ************************************************************************** */
 

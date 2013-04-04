@@ -11,7 +11,7 @@ test -L $SCRIPT_FILE && SCRIPT_FILE=`readlink $SCRIPT_FILE`
 SCRIPT_DIR=`dirname $SCRIPT_FILE`
 source $SCRIPT_DIR/cro-common.sh
 
-$KRUN --no-color --search "$@" |tail -n+3 > $SOLUTIONS_ALL
+$KRUN --compiled-def cro-srp-kompiled --no-color --search "$@" |tail -n+3 > $SOLUTIONS_ALL
 cp $SOLUTIONS_ALL test.output.tmp
 
 SOLUTIONS=`grep Solution $SOLUTIONS_ALL | wc -l`
