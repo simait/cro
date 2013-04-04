@@ -22,11 +22,14 @@ require "cro-core-semantic.k"
 /* ************************************************************************** */
 
 require "cro-srp-config.k"
+require "cro-srp-syntax.k"
 
 /* ************************************************************************** */
 
 module CRO-SRP-SEMANTIC-MESSAGES-SEND
 
+	imports CRO-SRP-SYNTAX
+	imports CRO-SRP-CONFIG
 	imports CRO-CORE-SEMANTIC-MESSAGES
 
 /* ************************************************************************** */
@@ -116,7 +119,22 @@ module CRO-SRP-SEMANTIC-MESSAGES-SEND
 /* ************************************************************************** */
 
 	rule
-		<k> send ( messageClosure('_`(_`)(M:Method,, Vs:Values)) ) ; => schedule(M, Vs) ... </k>
+		send P:Priority E:Exp ; => messageClosureCreate(E) ~> send P HOLE ;	[heat]
+
+/* ************************************************************************** */
+
+	rule
+		MC:MessageClosure ~> send P:Priority HOLE ; => send P MC ;	[cool]
+
+/* ************************************************************************** */
+
+	rule
+		send MC:MessageClosure ; => send priority(1) MC ;		[anywhere]
+
+/* ************************************************************************** */
+
+	rule
+		<k> send priority(_:Int) ( messageClosure('_`(_`)(M:Method,, Vs:Values)) ) ; => schedule(M, Vs) ... </k>
 	/*
 		<messages>
 			<message>

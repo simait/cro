@@ -20,10 +20,20 @@
 require "cro-core-config.k"
 require "cro-core-init.k"
 
+/* ************************************************************************** */
+
+require "cro-srp-syntax.k"
+
+/* ************************************************************************** */
+
 module CRO-SRP-INFER-CEILINGS
 
 	imports CRO-CORE-CONFIG
 	imports CRO-CORE-INIT
+
+/* ************************************************************************** */
+
+	imports CRO-SRP-SYNTAX
 
 /* ************************************************************************** */
 
@@ -34,6 +44,9 @@ module CRO-SRP-INFER-CEILINGS
 	rule <k> inferSRP => . ... </k>
 
 /* ************************************************************************** */
+
+	rule
+		I:Id = new C:Id (Es:Exps) ; => I = new ceiling(1) C (Es);	[anywhere]
 
 /*
 	rule
