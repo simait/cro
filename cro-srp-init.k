@@ -17,45 +17,48 @@
  * along with CRO-SRP-K.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require "cro-core-config.k"
 require "cro-core-init.k"
+require "cro-srp-syntax.k"
 
-module CRO-SRP-INFER-CEILINGS
+/* ************************************************************************** */
 
-	imports CRO-CORE-CONFIG
+module CRO-SRP-INIT
+
 	imports CRO-CORE-INIT
+	imports CRO-SRP-SYNTAX
+
 
 /* ************************************************************************** */
 
-	syntax K ::= "inferSRP"
+	syntax K ::=
+		"objectCeilingSet" "(" Int "," LocationValue ")"		[strict(2)]
 
 /* ************************************************************************** */
 
-	rule <k> inferSRP => . ... </k>
-
-/* ************************************************************************** */
-
-/*
 	rule
+		<k> objectCeilingSet(C:Int, locationValue(L:Int)) => locationValue(L) ... </k>
 		<store>
 			...
-			_:Int |-> (
-				objectClosure(
-						<interface> I:Map </interface>
-						<bindings> B:Map </bindings>
-						<state> S:Map </state>
-						<active> A:Bool </active>
-				) =>
-				objectClosure(
-						<interface> I </interface>
-						<bindings> B </bindings>
-						<state> S </state>
-						<active> A </active>
-						<ceiling> 1 </ceiling>
+			L |-> objectClosure(
+					(. => <ceiling> C </ceiling>)
+					_:Bag
 				)
-			)
+			...
 		</store>
-*/
+
+/* ************************************************************************** */
+
+	rule
+		<k> I:Id = new ceiling(OC:Int) C:Id (Vs:Values); => objectBindAdd(I, objectCeilingSet(OC, objectCreate(C, Vs))) ... </k>
+
+/* ************************************************************************** */
+
+	syntax K ::= "programInitSRP"
+
+/* ************************************************************************** */
+
+	rule
+		<k> programInitSRP => contextsInit(objectCeilingSet(0, objectCreate(root, .Values))) ... </k>
 
 /* ************************************************************************** */
 

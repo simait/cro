@@ -33,6 +33,7 @@ module CRO-SRP-CONFIG
 				<message multiplicity="*" color="yellow">
 					<k color="green"> programLoaded($PGM:K) </k>
 					<contexts color="magenta"> .List </contexts>
+					<priority> 0:Int </priority>
 				</message>
 			</messages>
 

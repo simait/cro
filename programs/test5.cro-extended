@@ -1,4 +1,4 @@
-module test4 {
+module test5 {
 
 	class root() {
 		inv0 = new invoker();

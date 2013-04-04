@@ -25,7 +25,9 @@ require "cro-core-init.k"
 
 /* ************************************************************************** */
 
+require "cro-srp-init.k"
 require "cro-srp-config.k"
+require "cro-srp-syntax.k"
 require "cro-srp-infer-ceilings.k"
 require "cro-srp-semantic-objects-activate.k"
 require "cro-srp-semantics-messages-send.k"
@@ -35,22 +37,22 @@ require "cro-srp-semantics-messages-send.k"
 module CRO-SRP
 
 	imports CRO-SRP-CONFIG
+	imports CRO-SRP-SYNTAX
 	imports CRO-SRP-SEMANTIC-OBJECTS-ACTIVATE
 	imports CRO-SRP-SEMANTIC-MESSAGES-SEND
 	imports CRO-SRP-INFER-CEILINGS
+	imports CRO-SRP-INIT
 	
 /* ************************************************************************** */
 
 	imports CRO-CORE-CONFIG
-	imports CRO-CORE-SYNTAX
 	imports CRO-CORE-PARSER
 	imports CRO-CORE-SEMANTIC
-	imports CRO-CORE-INIT
-
+	
 /* ************************************************************************** */
 
 	rule
-		<k> programLoaded(P:K) => programParse(P) ~> programInit ~> inferSRP ~> programEval </k>	[transition]
+		<k> programLoaded(P:K) => programParse(P) ~> programInitSRP ~> programEval </k>	[transition]
 
 /* ************************************************************************** */
 

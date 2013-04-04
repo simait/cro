@@ -1,0 +1,17 @@
+module test7 {
+	class root() {
+		o = new ceiling(5) object();
+	
+		method init() {
+			send priority(5) o.m(42);
+			send priority(4) o.m(84);
+		}
+	}
+
+	class object() {
+		var state := 0;
+		method m(v) {
+			state := v;
+		}
+	}
+}

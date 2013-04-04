@@ -17,45 +17,54 @@
  * along with CRO-SRP-K.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-require "cro-core-config.k"
-require "cro-core-init.k"
-
-module CRO-SRP-INFER-CEILINGS
-
-	imports CRO-CORE-CONFIG
-	imports CRO-CORE-INIT
+require "cro-core-syntax.k"
 
 /* ************************************************************************** */
 
-	syntax K ::= "inferSRP"
+module CRO-SRP-SYNTAX
 
-/* ************************************************************************** */
-
-	rule <k> inferSRP => . ... </k>
+	imports CRO-CORE-SYNTAX
 
 /* ************************************************************************** */
 
 /*
-	rule
-		<store>
-			...
-			_:Int |-> (
-				objectClosure(
-						<interface> I:Map </interface>
-						<bindings> B:Map </bindings>
-						<state> S:Map </state>
-						<active> A:Bool </active>
-				) =>
-				objectClosure(
-						<interface> I </interface>
-						<bindings> B </bindings>
-						<state> S </state>
-						<active> A </active>
-						<ceiling> 1 </ceiling>
-				)
-			)
-		</store>
+	syntax Time ::=
+		"sec" "(" Int ")"
+		| "msec" "(" Int ")"
+		| "usec" "(" Int ")"
 */
+
+/* ************************************************************************** */
+
+/*
+	syntax TimeConstraint ::=
+		"before" Time
+		| "after" Time
+*/
+
+/* ************************************************************************** */
+
+	syntax Priority ::=
+		"priority" "(" Int ")"
+
+/* ************************************************************************** */
+
+	syntax Ceiling ::=
+		"ceiling" "(" Int ")"
+
+/* ************************************************************************** */
+
+/*
+	syntax Cmd ::=
+		"send" TimeConstraint Exp ";"
+		| "send" TimeConstraint TimeConstraint Exp ";"
+		| "send" Priority Exp ";"
+*/
+	syntax Cmd ::=
+		"send" Priority Exp ";"
+
+	syntax Decl ::=
+		Id "=" "new" Ceiling Id "(" Exps ")" ";"
 
 /* ************************************************************************** */
 

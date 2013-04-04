@@ -1,0 +1,18 @@
+module test6 {
+
+	class root() {
+		o = new object();
+	
+		method init() {
+			send o.m(1);
+			send o.m(2);
+		}
+	}
+
+	class object() {
+		var state := 0;
+		method m(v) {
+			state := v;
+		}
+	}
+}
