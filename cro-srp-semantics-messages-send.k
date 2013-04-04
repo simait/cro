@@ -64,7 +64,7 @@ module CRO-SRP-SEMANTIC-MESSAGES-SEND
 
 /* ************************************************************************** */
 
-	syntax ListItem ::= "(" Method "," Values ")"
+	syntax BagItem ::= "(" Method "," Values ")"
 
 /* ************************************************************************** */
 
@@ -82,14 +82,16 @@ module CRO-SRP-SEMANTIC-MESSAGES-SEND
 		</k>
 		<systemceiling> ListItem(CC:Int) ... </systemceiling>
 		<messagequeue>
-			. => ListItem(
+			. =>
+			BagItem(
 				methodClosure(
 					<object> locationValue(O:Int) </object>
 					<params> Is:Ids </params>
 					<commands> Cs:Cmds </commands>
 				),
 				Vs:Values
-			) ...
+			)
+			...
 		</messagequeue>
 		<store>
 			...
@@ -103,12 +105,13 @@ module CRO-SRP-SEMANTIC-MESSAGES-SEND
 	rule
 		<k> messageDone => schedule(MC, Vs) ~> messageDone </k>
 		<messagequeue>
-			ListItem(
+			BagItem(
 				MC:Method,
 				Vs:Values
-			) => .
+			)
+			=> .
 			...
-		</messagequeue>
+		</messagequeue>							[transition]
 
 /* ************************************************************************** */
 

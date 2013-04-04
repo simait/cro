@@ -42,7 +42,7 @@ module CRO-SRP-CONFIG
 
 			<ceiling> 0 </ceiling>
 			<systemceiling> ListItem(0) .List </systemceiling>
-			<messagequeue> .List </messagequeue>
+			<messagequeue> .Bag </messagequeue>
 
 			<store color="red"> .Map </store>
 			<nextLocation color="blue"> 0 </nextLocation>
