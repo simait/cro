@@ -56,9 +56,37 @@ module CRO-SRP-SEMANTIC-MESSAGES-SEND
 
 	rule
 		<k>
-			send priority(P:Int) MC:MessageClosure ; ~> Cont:K =>
-			schedule(P, MC, Cont)
+			send priority(P:Int) messageClosure(
+				'_`(_`)(
+					methodClosure(
+						<object> locationValue(O:Int) </object>
+						B:Bag
+						),,
+					Vs:Values
+					)
+				) ; ~> Cont:K =>
+			schedule(
+				P,
+				C,
+				('_`(_`)(
+					methodClosure(
+						<object> locationValue(O) </object>
+						B
+						),,
+					Vs
+					)
+				;),
+				Cont
+			)
 		</k>
+		<store>
+			...
+			O |-> objectClosure(
+				<ceiling> C:Int </ceiling>
+				_:Bag
+				)
+			...
+		</store>
 
 /* ************************************************************************** */
 

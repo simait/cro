@@ -73,24 +73,24 @@ module CRO-SRP-SCHEDULE
 
 /* ************************************************************************** */
 
-	syntax K ::= "checkPriority" "(" Int "," MessageClosure "," K ")"
+	syntax K ::= "checkPriority" "(" Int "," Int "," K "," K ")"
 
 /* ************************************************************************** */
 
 	rule
 		<k>
-			(checkPriority(P:Int, MC:MessageClosure, Cont:K) ~> _:K) =>
+			(checkPriority(P:Int, C:Int, Code:K, Cont:K) ~> _:K) =>
 			(schedulingDone ~> Cont)
 		</k>
 		<systempriority> ListItem(CP:Int) ... </systempriority>
-		<messagequeue> ... . => ListItem(P, MC) </messagequeue>
+		<messagequeue> ... . => ListItem(P, C, Code) </messagequeue>
 		when P <=Int CP
 
 /* ************************************************************************** */
 
 	rule
 		<k>
-			(checkPriority(P:Int, MC:MessageClosure, Cont:K) ~> K:K) =>
+			(checkPriority(P:Int, C:Int, Code:K, Cont:K) ~> K:K) =>
 			K
 		</k>
 		<systempriority> ListItem(CP:Int) ... </systempriority>
@@ -98,89 +98,39 @@ module CRO-SRP-SCHEDULE
 
 /* ************************************************************************** */
 
-	syntax K ::= "checkCeiling" "(" Int "," MessageClosure "," K ")"
+	syntax K ::= "checkCeiling" "(" Int "," Int "," K "," K ")"
 
 /* ************************************************************************** */
 
 	rule
 		<k>
-			(
-				checkCeiling(
-					P:Int,
-					messageClosure('_`(_`)(
-						methodClosure(
-							<object> locationValue(O:Int) </object>
-							MB:Bag
-						),,
-						Vs:Values)
-						),
-					Cont:K
-				) ~>
-				_:K
-			) => (
-				schedulingDone ~> Cont
-			)
+			(checkCeiling(P:Int, C:Int, Code:K, Cont:K) ~> K) =>
+			(schedulingDone ~> Cont)
 		</k>
-		<store>
-			...
-			O |-> objectClosure(
-				<ceiling> OC:Int </ceiling>
-				_:Bag
-				)
-			...
-		</store>
 		<systemceiling> ListItem(CC:Int) ... </systemceiling>
 		<messagequeue>
 			...
 			. => ListItem(
 				P,
-				messageClosure(
-					'_`(_`)(
-						methodClosure(
-							<object> locationValue(O:Int) </object>
-							MB:Bag
-						),,
-						Vs:Values)
-					)
+				C,
+				Code
 				)
 		</messagequeue>
-		when OC <=Int CC
+		when C <=Int CC
 
 /* ************************************************************************** */
 
 	rule
 		<k>
-			(
-				checkCeiling(
-					P:Int,
-					messageClosure('_`(_`)(
-						methodClosure(
-							<object> locationValue(O:Int) </object>
-							MB:Bag
-						),,
-						Vs:Values)
-						),
-					Cont:K
-				) ~>
-				K:K
-			) => (
-				K
-			)
+			(checkCeiling(P:Int, C:Int, Code:K, Cont:K) ~> K) =>
+			(K)
 		</k>
-		<store>
-			...
-			O |-> objectClosure(
-				<ceiling> OC:Int </ceiling>
-				_:Bag
-				)
-			...
-		</store>
 		<systemceiling> ListItem(CC:Int) ... </systemceiling>
-		when OC >Int CC
+		when C >Int CC
 
 /* ************************************************************************** */
 
-	syntax K ::= "dispatch" "(" Int "," MessageClosure "," K ")"
+	syntax K ::= "dispatch" "(" Int "," Int "," K "," K ")"
 
 /* ************************************************************************** */
 
@@ -188,12 +138,13 @@ module CRO-SRP-SCHEDULE
 		<k>
 			dispatch(
 				P:Int,
-				messageClosure(E:Exp),
+				C:Int,
+				Code:K,
 				Cont:K
 			) =>
 			pushPriority(P) ~>
 			schedulingDone ~>
-			(E;) ~>
+			Code ~>
 			schedulingStart ~>
 			popPriority() ~>
 			schedulingDone ~>
@@ -213,41 +164,49 @@ module CRO-SRP-SCHEDULE
 		<schedulenext> . => Messages </schedulenext>
 		when lengthList(Messages) =/=Int 0
 
+/* ************************************************************************** */
+
 	rule
 		<k> scheduleHighestPriority => schedulingDone </k>
 		<messagequeue> .List </messagequeue>
 		<schedulenext> .List </schedulenext>
 
+/* ************************************************************************** */
+
 	rule
 		<k> scheduleHighestPriority </k>
 		<messagequeue>
 			...
-			. => ListItem(P2:Int, MC2:MessageClosure)
+			. => ListItem(P2:Int, C2:Int, Code2:K)
 		</messagequeue>
 		<schedulenext>
-			ListItem(P1:Int, MC1:MessageClosure)
-			(ListItem(P2:Int, MC2:MessageClosure) => .)
+			ListItem(P1:Int, C1:Int, Code1:K)
+			(ListItem(P2:Int, C2:Int, Code2:K) => .)
 			...
 		</schedulenext>
 		when P1 >=Int P2
 
+/* ************************************************************************** */
+
 	rule
 		<k> scheduleHighestPriority </k>
 		<messagequeue>
 			...
-			. => ListItem(P1:Int, MC1:MessageClosure)
+			. => ListItem(P1:Int, C1:Int, Code1:K)
 		</messagequeue>
 		<schedulenext>
-			(ListItem(P1:Int, MC1:MessageClosure) => .)
-			ListItem(P2:Int, MC2:MessageClosure)
+			(ListItem(P1:Int, C1:Int, Code1:K) => .)
+			ListItem(P2:Int, C2:Int, Code2:K)
 			...
 		</schedulenext>
 		when P2 >Int P1
 
+/* ************************************************************************** */
+
 	rule
-		<k> scheduleHighestPriority => dispatch(P, MC, messageDone) </k>
+		<k> scheduleHighestPriority => dispatch(P, C, Code, messageDone) </k>
 		<schedulenext>
-			(ListItem(P:Int, MC:MessageClosure) => .)
+			(ListItem(P:Int, C:Int, Code:K) => .)
 			.List
 		</schedulenext>
 
@@ -267,17 +226,17 @@ module CRO-SRP-SCHEDULE
 
 /* ************************************************************************** */
 
-	syntax K ::= "schedule" "(" Int "," MessageClosure "," K ")"
+	syntax K ::= "schedule" "(" Int "," Int "," K "," K ")"
 
 /* ************************************************************************** */
 
 	rule
 		<k>
-			schedule(P:Int, MC:MessageClosure, Cont:K) =>
+			schedule(P:Int, C:Int, Code:K, Cont:K) =>
 			schedulingStart ~>
-			checkPriority(P, MC, Cont) ~>
-			checkCeiling(P, MC, Cont) ~>
-			dispatch(P, MC, Cont)
+			checkPriority(P, C, Code, Cont) ~>
+			checkCeiling(P, C, Code, Cont) ~>
+			dispatch(P, C, Code, Cont)
 		</k>
 
 /* ************************************************************************** */
