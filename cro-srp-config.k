@@ -18,12 +18,14 @@
  */
 
 require "cro-core-config.k"
+require "cro-srp-semantics-messages-send.k"
 
 /* ************************************************************************** */
 
 module CRO-SRP-CONFIG
 
 	imports CRO-CORE-CONFIG
+	imports CRO-SRP-SEMANTIC-MESSAGES-SEND
 
 /* ************************************************************************** */
 
@@ -33,7 +35,6 @@ module CRO-SRP-CONFIG
 				<message multiplicity="*" color="yellow">
 					<k color="green"> programLoaded($PGM:K) </k>
 					<contexts color="magenta"> .List </contexts>
-					<priority> 0:Int </priority>
 				</message>
 			</messages>
 
@@ -42,8 +43,13 @@ module CRO-SRP-CONFIG
 			</classes>
 
 			<ceiling> 0 </ceiling>
-			<systemceiling> ListItem(0) .List </systemceiling>
-			<messagequeue> .Bag </messagequeue>
+			<schedule>
+				<scheduling> false </scheduling>
+				<systemceiling> ListItem(0) .List </systemceiling>
+				<systempriority> ListItem(0) .List </systempriority>
+				<schedulenext> .List </schedulenext>
+				<messagequeue> .List </messagequeue>
+			</schedule>
 
 			<store color="red"> .Map </store>
 			<nextLocation color="blue"> 0 </nextLocation>

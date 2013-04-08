@@ -23,6 +23,7 @@ require "cro-core-semantic.k"
 
 require "cro-srp-config.k"
 require "cro-srp-syntax.k"
+require "cro-srp-schedule.k"
 
 /* ************************************************************************** */
 
@@ -30,96 +31,16 @@ module CRO-SRP-SEMANTIC-MESSAGES-SEND
 
 	imports CRO-SRP-SYNTAX
 	imports CRO-SRP-CONFIG
+	imports CRO-SRP-SCHEDULE
 	imports CRO-CORE-SEMANTIC-MESSAGES
 
-/* ************************************************************************** */
-
-	syntax K ::= "schedule" "(" Method "," Values ")"
 
 /* ************************************************************************** */
 
 	rule
-		<k>
-			schedule (
-				methodClosure(
-					<object> locationValue(O:Int) </object>
-					<params> Is:Ids </params>
-					<commands> Cs:Cmds </commands>
-				),
-				Vs:Values
-			) => '_`(_`)(
-					methodClosure(
-						<object> locationValue(O:Int) </object>
-						<params> Is:Ids </params>
-						<commands> Cs:Cmds </commands>
-					),,
-					Vs:Values
-				) ;
-			...
-		</k>
-		<systemceiling> ListItem(CC:Int) ... </systemceiling>
-		<store>
-			...
-			L |-> objectClosure(<ceiling> OC:Int </ceiling> _:Bag)
-			...
-		</store>
-		when OC >Int CC:Int						[transition]
-
-/* ************************************************************************** */
-
-	syntax BagItem ::= "(" Method "," Values ")"
-
-/* ************************************************************************** */
-
-	rule
-		<k>
-			schedule (
-				methodClosure(
-					<object> locationValue(O:Int) </object>
-					<params> Is:Ids </params>
-					<commands> Cs:Cmds </commands>
-				),
-				Vs:Values
-			) => .
-			...
-		</k>
-		<systemceiling> ListItem(CC:Int) ... </systemceiling>
-		<messagequeue>
-			. =>
-			BagItem(
-				methodClosure(
-					<object> locationValue(O:Int) </object>
-					<params> Is:Ids </params>
-					<commands> Cs:Cmds </commands>
-				),
-				Vs:Values
-			)
-			...
-		</messagequeue>
-		<store>
-			...
-			L |-> objectClosure(<ceiling> OC:Int </ceiling> _:Bag)
-			...
-		</store>
-		when OC <=Int CC:Int						[transition]
-
-/* ************************************************************************** */
-
-	rule
-		<k> messageDone => schedule(MC, Vs) ~> messageDone </k>
-		<messagequeue>
-			BagItem(
-				MC:Method,
-				Vs:Values
-			)
-			=> .
-			...
-		</messagequeue>							[transition]
-
-/* ************************************************************************** */
-
-	rule
-		send P:Priority E:Exp ; => messageClosureCreate(E) ~> send P HOLE ;	[heat]
+		send
+			P:Priority E:Exp ; =>
+			messageClosureCreate(E) ~> send P HOLE ;		[heat]
 
 /* ************************************************************************** */
 
@@ -134,25 +55,18 @@ module CRO-SRP-SEMANTIC-MESSAGES-SEND
 /* ************************************************************************** */
 
 	rule
-		<k> send priority(_:Int) ( messageClosure('_`(_`)(M:Method,, Vs:Values)) ) ; => schedule(M, Vs) ... </k>
-	/*
-		<messages>
-			<message>
-				<k>
-					send ( messageClosure('_`(_`)(M:Method,, Vs:Values)) ) ; => .
-					...
-				</k>
-				...
-			</message>
-			(. =>
-				<message>
-					<k> '_`(_`)(M,, Vs); ~> messageDone </k>
-					<contexts> .List </contexts>
-				</message>
-			)
-			...
-		</messages>							[transition]
-	*/
+		<k>
+			send priority(P:Int) MC:MessageClosure ; ~> Cont:K =>
+			schedule(P, MC, Cont)
+		</k>
+
+/* ************************************************************************** */
+
+	rule
+		<k>
+			messageDone =>
+			schedule()
+		</k>
 
 /* ************************************************************************** */
 
