@@ -33,182 +33,53 @@ module CRO-SRP-SCHEDULE
 	
 /* ************************************************************************** */
 
-	syntax K ::= "schedulingStart"
+	syntax List ::= "enqueuByPriority" "(" Int "," Int "," K "," List ")"[function]
 
 /* ************************************************************************** */
 
 	rule
-		<k> schedulingStart => . ... </k>
-		<scheduling> false => true </scheduling>			[transition]
-
-/* ************************************************************************** */
-
-	syntax K ::= "schedulingDone"
-
-/* ************************************************************************** */
-
-	rule
-		<k> schedulingDone => . ... </k>
-		<scheduling> true => false </scheduling>			[transition]
-
-/* ************************************************************************** */
-
-	syntax K ::= "pushPriority" "(" Int ")"
-
-/* ************************************************************************** */
-
-	rule
-		<k> pushPriority(P:Int) => . ... </k>
-		<systempriority> . => ListItem(P) ... </systempriority>		[transition]
-
-/* ************************************************************************** */
-
-	syntax K ::= "popPriority" "(" ")"
-
-/* ************************************************************************** */
-
-	rule
-		<k> popPriority() => . ... </k>
-		<systempriority> ListItem(_:Int) => . ... </systempriority>	[transition]
-
-/* ************************************************************************** */
-
-	syntax K ::= "checkPriority" "(" Int "," Int "," K "," K ")"
-
-/* ************************************************************************** */
-
-	rule
-		<k>
-			(checkPriority(P:Int, C:Int, Code:K, Cont:K) ~> _:K) =>
-			(schedulingDone ~> Cont)
-		</k>
-		<systempriority> ListItem(CP:Int) ... </systempriority>
-		<messagequeue> ... . => ListItem(P, C, Code) </messagequeue>
-		when P <=Int CP
-
-/* ************************************************************************** */
-
-	rule
-		<k>
-			(checkPriority(P:Int, C:Int, Code:K, Cont:K) ~> K:K) =>
-			K
-		</k>
-		<systempriority> ListItem(CP:Int) ... </systempriority>
-		when P >Int CP
-
-/* ************************************************************************** */
-
-	syntax K ::= "checkCeiling" "(" Int "," Int "," K "," K ")"
-
-/* ************************************************************************** */
-
-	rule
-		<k>
-			(checkCeiling(P:Int, C:Int, Code:K, Cont:K) ~> K) =>
-			(schedulingDone ~> Cont)
-		</k>
-		<systemceiling> ListItem(CC:Int) ... </systemceiling>
-		<messagequeue>
-			...
-			. => ListItem(
-				P,
-				C,
-				Code
-				)
-		</messagequeue>
-		when C <=Int CC
-
-/* ************************************************************************** */
-
-	rule
-		<k>
-			(checkCeiling(P:Int, C:Int, Code:K, Cont:K) ~> K) =>
-			(K)
-		</k>
-		<systemceiling> ListItem(CC:Int) ... </systemceiling>
-		when C >Int CC
-
-/* ************************************************************************** */
-
-	syntax K ::= "dispatch" "(" Int "," Int "," K "," K ")"
-
-/* ************************************************************************** */
-
-	rule
-		<k>
-			dispatch(
-				P:Int,
-				C:Int,
-				Code:K,
-				Cont:K
-			) =>
-			pushPriority(P) ~>
-			schedulingDone ~>
-			Code ~>
-			schedulingStart ~>
-			popPriority() ~>
-			schedulingDone ~>
-			Cont
-		</k>
-
-
-/* ************************************************************************** */
-
-	syntax K ::= "scheduleHighestPriority"
-
-/* ************************************************************************** */
-
-	rule
-		<k> scheduleHighestPriority </k>
-		<messagequeue> Messages:List => .List </messagequeue>
-		<schedulenext> . => Messages </schedulenext>
-		when lengthList(Messages) =/=Int 0
-
-/* ************************************************************************** */
-
-	rule
-		<k> scheduleHighestPriority => schedulingDone </k>
-		<messagequeue> .List </messagequeue>
-		<schedulenext> .List </schedulenext>
-
-/* ************************************************************************** */
-
-	rule
-		<k> scheduleHighestPriority </k>
-		<messagequeue>
-			...
-			. => ListItem(P2:Int, C2:Int, Code2:K)
-		</messagequeue>
-		<schedulenext>
-			ListItem(P1:Int, C1:Int, Code1:K)
-			(ListItem(P2:Int, C2:Int, Code2:K) => .)
-			...
-		</schedulenext>
-		when P1 >=Int P2
-
-/* ************************************************************************** */
-
-	rule
-		<k> scheduleHighestPriority </k>
-		<messagequeue>
-			...
-			. => ListItem(P1:Int, C1:Int, Code1:K)
-		</messagequeue>
-		<schedulenext>
-			(ListItem(P1:Int, C1:Int, Code1:K) => .)
-			ListItem(P2:Int, C2:Int, Code2:K)
-			...
-		</schedulenext>
-		when P2 >Int P1
-
-/* ************************************************************************** */
-
-	rule
-		<k> scheduleHighestPriority => dispatch(P, C, Code, messageDone) </k>
-		<schedulenext>
-			(ListItem(P:Int, C:Int, Code:K) => .)
+		enqueuByPriority(
+			P:Int,
+			C:Int,
+			Msg:K,
 			.List
-		</schedulenext>
+		) => (
+			ListItem(P, C, Msg)
+			.List
+		)
+
+	rule
+		enqueuByPriority(
+			P1:Int,
+			C1:Int,
+			Msg1:K,
+			ListItem(P2:Int, C2:Int, Msg2:K) T:List
+		) => (
+			ListItem(P1, C1, Msg1)
+			ListItem(P2, C2, Msg2)
+			T
+		)
+		when P1 >Int P2
+	rule
+		enqueuByPriority(
+			P1:Int,
+			C1:Int,
+			Msg1:K,
+			ListItem(P2:Int, C2:Int, Code2:K) T:List
+		) => (
+			ListItem(P2, C2, Code2) enqueuByPriority(P1, C1, Msg1, T)
+		)
+		when P1 <=Int P2
+
+/* ************************************************************************** */
+
+	syntax K ::= "restorePriority" "(" ")"
+
+/* ************************************************************************** */
+
+	rule
+		<k> restorePriority() => . ... </k>
+		<systempriority> ListItem(_:Int) => . ... </systempriority>
 
 /* ************************************************************************** */
 
@@ -219,25 +90,37 @@ module CRO-SRP-SCHEDULE
 	rule
 		<k> 
 			schedule() =>
-			schedulingStart ~> 
-			scheduleHighestPriority
+			Msg ~>
+			restorePriority()
 			...
 		</k>
+		<systempriority> (. => ListItem(P2:Int)) ListItem(P1:Int) ... </systempriority>
+		<systemceiling> ListItem(C1:Int) ... </systemceiling>
+		<messagequeue> ListItem(P2:Int, C2:Int, Msg:K) => . ... </messagequeue>
+		when (P2 >Int P1) andBool (C2 >Int C1)				[transition]
+
+	rule
+		<k>
+			schedule() => .
+			...
+		</k>
+		<systempriority> ListItem(P1:Int) ... </systempriority>
+		<systemceiling> ListItem(C1:Int) ... </systemceiling>
+		<messagequeue> ListItem(P2:Int, C2:Int, _:K) ... </messagequeue>
+		when notBool((P2 >Int P1) andBool (C2 >Int C1))			[transition]
+
 
 /* ************************************************************************** */
 
-	syntax K ::= "schedule" "(" Int "," Int "," K "," K ")"
+	syntax K ::= "schedule" "(" Int "," Int "," Cmds ")"
 
 /* ************************************************************************** */
 
 	rule
 		<k>
-			schedule(P:Int, C:Int, Code:K, Cont:K) =>
-			schedulingStart ~>
-			checkPriority(P, C, Code, Cont) ~>
-			checkCeiling(P, C, Code, Cont) ~>
-			dispatch(P, C, Code, Cont)
+			schedule(P:Int, C:Int, Msg:Cmds) => . ...
 		</k>
+		<messagequeue> Ms:List => enqueuByPriority(P, C, Msg, Ms) </messagequeue>
 
 /* ************************************************************************** */
 

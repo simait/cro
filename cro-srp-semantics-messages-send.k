@@ -49,8 +49,10 @@ module CRO-SRP-SEMANTIC-MESSAGES-SEND
 
 /* ************************************************************************** */
 
+/*
 	rule
 		send MC:MessageClosure ; => send priority(1) MC ;		[anywhere]
+*/
 
 /* ************************************************************************** */
 
@@ -64,7 +66,7 @@ module CRO-SRP-SEMANTIC-MESSAGES-SEND
 						),,
 					Vs:Values
 					)
-				) ; ~> Cont:K =>
+				) ; =>
 			schedule(
 				P,
 				C,
@@ -75,9 +77,9 @@ module CRO-SRP-SEMANTIC-MESSAGES-SEND
 						),,
 					Vs
 					)
-				;),
-				Cont
+				;)
 			)
+			...
 		</k>
 		<store>
 			...
@@ -93,7 +95,7 @@ module CRO-SRP-SEMANTIC-MESSAGES-SEND
 	rule
 		<k>
 			messageDone =>
-			schedule()
+			schedule() ~> messageDone
 		</k>
 
 /* ************************************************************************** */

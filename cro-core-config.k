@@ -36,6 +36,12 @@ module CRO-CORE-CONFIG
 				</message>
 			</messages>
 
+			<maxmessages> $MAXMESSAGES:Int </maxmessages>
+
+			<messagequeue>
+				.List
+			</messagequeue>
+
 			<runtime>
 				<class>
 					<interface> .Map </interface>

@@ -19,6 +19,7 @@
 
 require "cro-core-parser.k"
 require "cro-core-init.k"
+require "cro-core-schedule.k"
 
 /* ************************************************************************** */
 
@@ -266,8 +267,13 @@ endmodule
 module CRO-CORE-SEMANTIC-MESSAGES-SEND
 
 	imports CRO-CORE-SEMANTIC-MESSAGES
+	imports CRO-CORE-SCHEDULE
 
 /* ************************************************************************** */
+
+	rule
+		<k> send (messageClosure(E:Exp)) ; => schedule (E ;) ... </k>
+/*
 	rule
 		<messages>
 			<message>
@@ -285,6 +291,7 @@ module CRO-CORE-SEMANTIC-MESSAGES-SEND
 			)
 			...
 		</messages>							[transition]
+*/
 
 /* ************************************************************************** */
 

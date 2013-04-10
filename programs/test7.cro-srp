@@ -3,8 +3,14 @@ module test7 {
 		o = new ceiling(5) object();
 	
 		method init() {
-			send priority(1) o.m(84);
-			send priority(1) o.m(42);
+			send priority(2) o.m(1);
+			send priority(2) o.m(2);
+			send priority(3) o.m(3);
+			send priority(6) o.m(4);
+			send priority(9) o.m(5);
+			send priority(10) o.m(6);
+			send priority(8) o.m(7);
+			send priority(1) o.m(8);
 		}
 	}
 

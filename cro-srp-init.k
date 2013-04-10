@@ -58,7 +58,7 @@ module CRO-SRP-INIT
 /* ************************************************************************** */
 
 	rule
-		<k> programInitSRP => contextsInit(objectCeilingSet(1, objectCreate(root, .Values))) ... </k>
+		<k> programInitSRP => contextsInit(objectCeilingSet(1000, objectCreate(root, .Values))) ... </k>
 
 /* ************************************************************************** */
 

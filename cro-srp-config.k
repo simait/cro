@@ -38,25 +38,24 @@ module CRO-SRP-CONFIG
 				</message>
 			</messages>
 
-			<classes color="purple">
-				.Map
-			</classes>
+			<maxmessages> 1 </maxmessages>
+			<messagequeue> .List </messagequeue>
 
-			<ceiling> 0 </ceiling>
-			<schedule>
-				<scheduling> false </scheduling>
-				<systemceiling> ListItem(0) .List </systemceiling>
-				<systempriority> ListItem(0) .List </systempriority>
-				<schedulenext> .List </schedulenext>
-				<messagequeue> .List </messagequeue>
-			</schedule>
+			<br/>
 
 			<store color="red"> .Map </store>
 			<nextLocation color="blue"> 0 </nextLocation>
 
-			/*<input stream="stdin"> $IN:List </input>*/
-			<output stream="stdout"> .List </output>
+			<classes color="purple">
+				.Map
+			</classes>
 
+			<br/>
+
+			<systemceiling> ListItem(0) .List </systemceiling>
+			<systempriority> ListItem(0) .List </systempriority>
+
+			<ceiling> 0 </ceiling>
 		</T>
 
 /* ************************************************************************** */
